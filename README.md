@@ -42,13 +42,6 @@ Este projeto foi criado como parte do meu **portfólio de estudos em desenvolvim
 
 ---
 
-## 📂 Estrutura do Projeto (resumo)
-
-
-*(estrutura pode variar conforme sua organização)*
-
----
-
 ## 🔐 Considerações de Segurança (Educacional)
 
 - O projeto não executa comandos reais no sistema
