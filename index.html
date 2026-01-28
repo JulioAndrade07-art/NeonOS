@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonOS Desktop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- DESKTOP GRID -->
+    <div id="desktop">
+
+        <!-- アイコン 1: Welcome -->
+        <div class="app-icon" onclick="openWindow('win-welcome')">
+            <div class="icon-box" style="color: var(--neon-pink);">★</div>
+            <div class="app-name">Bem-vindo</div>
+        </div>
+
+        <!-- アイコン 2: Custom JS Playground -->
+        <div class="app-icon" onclick="openWindow('win-custom-js')">
+            <div class="icon-box" style="color: var(--neon-blue);">&lt;/&gt;</div>
+            <div class="app-name">Dev Console</div>
+        </div>
+
+        <!-- アイコン 3: System Status -->
+        <div class="app-icon" onclick="openWindow('win-status')">
+            <div class="icon-box" style="color: #0f0;">⚡</div>
+            <div class="app-name">Sistema</div>
+        </div>
+
+        <!-- アイコン 4: Calculator -->
+        <div class="app-icon" onclick="openWindow('win-calc')">
+            <div class="icon-box" style="color: var(--neon-cyan); font-size: 30px;">+</div>
+            <div class="app-name">Calculadora</div>
+        </div>
+
+        <!-- アイコン 5: Management System -->
+        <div class="app-icon" onclick="openWindow('win-mgmt')">
+            <div class="icon-box" style="color: #ff9900; font-size: 24px;">⛔</div>
+            <div class="app-name">Gestão</div>
+        </div>
+
+    </div>
+
+    <!-- WINDOWS CONTAINER -->
+
+    <!-- ... existing windows ... -->
+
+
+
+    <!-- WINDOW 1: Welcome -->
+    <div id="win-welcome" class="window">
+        <div class="window-header">
+            <div class="window-title">Bem-vindo.exe</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-welcome')"></button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h2>NeonOS v1.0</h2>
+            <p>Sistema operacional simulado carregado com sucesso.</p>
+            <p>Este ambiente suporta janelas flutuantes, arrastar e soltar (drag & drop) e um visual glassmorphism
+                moderno.</p>
+            <p style="color: var(--neon-blue);">Clique nos outros ícones para testar.</p>
+        </div>
+    </div>
+
+    <!-- WINDOW 2: Custom JS (The requested feature) -->
+    <div id="win-custom-js" class="window active-glow" style="width: 600px;">
+        <div class="window-header">
+            <div class="window-title">Dev Console - Custom JS</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-custom-js')"></button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h2>Área de Desenvolvimento</h2>
+            <p>Aqui você pode injetar funcionalidades customizadas.</p>
+
+            <div id="custom-app-root">
+                <!-- 
+                     !!! ESPAÇO PARA JAVASCRIPT CUSTOMIZADO !!!
+                     O container abaixo (#custom-container) está pronto para receber
+                     conteúdo dinâmico via JS.
+                -->
+                <div id="custom-container"
+                    style="padding: 10px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; min-height: 100px;">
+                    <span style="opacity: 0.5;">[Conteúdo dinâmico aparecerá aqui...]</span>
+                </div>
+
+                <div class="code-area">
+                    <span class="code-comment">// Exemplo de onde inserir seu código:</span><br>
+                    <span class="code-keyword">const</span> container = document.getElementById(<span
+                        class="code-string">'custom-container'</span>);<br>
+                    <span class="code-comment">// Adicione seus widgets, gráficos ou lógica aqui</span>
+                </div>
+
+                <!-- Botão de exemplo para provar funcionamento -->
+                <button onclick="runDemoAction()"
+                    style="margin-top: 15px; padding: 8px 16px; background: var(--neon-purple); border: none; color: white; border-radius: 4px; cursor: pointer;">
+                    Executar Demo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINDOW 3: System Status -->
+    <div id="win-status" class="window">
+        <div class="window-header">
+            <div class="window-title">Monitor do Sistema</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-status')"></button>
+            </div>
+        </div>
+        <div class="window-content">
+            <p>CPU: <span style="color:var(--neon-blue)">NORMAL</span></p>
+            <p>RAM: <span style="color:var(--neon-pink)">OTIMIZADA</span></p>
+            <div
+                style="margin-top: 20px; width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden;">
+                <div
+                    style="width: 75%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));">
+                </div>
+            </div>
+            <p style="font-size: 10px; margin-top: 5px; text-align: right;">75% Capacidade Neon</p>
+        </div>
+    </div>
+
+    <!-- WINDOW 4: Calculator -->
+    <div id="win-calc" class="window" style="width: auto; height: auto; min-width: 400px;">
+        <div class="window-header">
+            <div class="window-title">Calculadora Neon</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-calc')"></button>
+            </div>
+        </div>
+        <div class="window-content" style="overflow: visible; padding: 0;">
+            <!-- Calc content wrapper -->
+            <div class="calc-wrapper" style="padding: 20px;">
+                <div class="glow-orb orb-1"></div>
+                <div class="glow-orb orb-2"></div>
+
+                <div class="calc-inner-flex" style="display: flex; gap: 20px; position: relative; z-index: 2;">
+                    <div class="history-panel" id="calc-historyPanel">
+                        <div class="history-header">
+                            MEMÓRIA
+                            <span class="clear-history" onclick="calcClearHistory()">LIMPAR</span>
+                        </div>
+                        <div class="history-list" id="calc-historyList">
+                            <!-- Items added here -->
+                        </div>
+                    </div>
+
+                    <div class="calculator">
+                        <div class="display-container">
+                            <div class="history-toggle" onclick="calcToggleHistory()">
+                                <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;">
+                                    <path
+                                        d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+                                </svg>
+                                HISTÓRICO
+                            </div>
+                            <input type="text" id="calc-display" readonly value="0">
+                        </div>
+                        <div class="buttons">
+                            <button class="calc-btn btn-clear" onclick="calcClearDisplay()">AC</button>
+                            <button class="calc-btn btn-op" onclick="calcDeleteLast()">DEL</button>
+                            <button class="calc-btn btn-op" onclick="calcAppendOperator('%')">%</button>
+                            <button class="calc-btn btn-op" onclick="calcAppendOperator('/')">÷</button>
+
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('7')">7</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('8')">8</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('9')">9</button>
+                            <button class="calc-btn btn-op" onclick="calcAppendOperator('*')">×</button>
+
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('4')">4</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('5')">5</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('6')">6</button>
+                            <button class="calc-btn btn-op" onclick="calcAppendOperator('-')">−</button>
+
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('1')">1</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('2')">2</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('3')">3</button>
+                            <button class="calc-btn btn-op" onclick="calcAppendOperator('+')">+</button>
+
+                            <button class="calc-btn btn-num span-2" style="border-radius: 15px;"
+                                onclick="calcAppendNumber('0')">0</button>
+                            <button class="calc-btn btn-num" onclick="calcAppendNumber('.')">.</button>
+                            <button class="calc-btn btn-eq" onclick="calcCalculate()">=</button>
+                        </div>
+                        <div class="footer">Neon Cyber Calc v1.1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINDOW 5: System Management (Simulated Web System) -->
+    <div id="win-mgmt" class="window" style="width: 700px; height: 500px;">
+        <div class="window-header">
+            <div class="window-title">Sistema de Gestão v2.0</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-mgmt')"></button>
+            </div>
+        </div>
+        <div class="window-content system-mgmt-container">
+            <!-- LOGIN VIEW -->
+            <div id="mgmt-view-login" class="mgmt-view">
+                <h2 style="color: #ff9900; text-shadow: 0 0 10px rgba(255, 153, 0, 0.5);">Acesso Restrito</h2>
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <input type="text" id="login-user" placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-pass" placeholder="admin">
+                </div>
+                <button class="mgmt-btn" onclick="sysLogin()">Entrar</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #666; cursor: pointer;" onclick="sysShowRegister()">
+                    Não tem conta? Cadastre-se</p>
+                <div id="login-msg" style="height: 20px; color: #ff5f56; font-size: 12px; margin-top: 5px;"></div>
+            </div>
+
+            <!-- REGISTER VIEW -->
+            <div id="mgmt-view-register" class="mgmt-view hidden">
+                <h2 style="color: var(--neon-blue);">Novo Usuário</h2>
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" id="reg-name" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <input type="text" id="reg-user" placeholder="Novo usuário">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="reg-pass" placeholder="Nova senha">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="mgmt-btn" onclick="sysRegister()">Cadastrar</button>
+                    <button class="mgmt-btn btn-secondary" onclick="sysShowLogin()">Voltar</button>
+                </div>
+                <div id="reg-msg" style="height: 20px; color: #ff5f56; font-size: 12px; margin-top: 5px;"></div>
+            </div>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="mgmt-view-dashboard" class="mgmt-view hidden" style="align-items: flex-start;">
+                <div class="dash-header">
+                    <h3 style="margin: 0;">Painel de Controle</h3>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span id="dash-user-display" style="color: #888; font-size: 12px;"></span>
+                        <button class="mgmt-btn btn-secondary btn-sm" onclick="sysLogout()">Sair</button>
+                    </div>
+                </div>
+
+                <div class="dash-tabs">
+                    <button class="tab-btn active" onclick="sysSwitchTab('users')">Usuários (CRUD)</button>
+                    <button class="tab-btn" onclick="sysSwitchTab('automation')">Automação</button>
+                </div>
+
+                <!-- TAB: USERS -->
+                <div id="tab-users" class="tab-content active">
+                    <div class="crud-toolbar">
+                        <h4>Lista de Usuários</h4>
+                        <button class="mgmt-btn btn-sm" onclick="sysShowRegister()">+ Novo</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Usuário</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Generated JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB: AUTOMATION -->
+                <div id="tab-automation" class="tab-content">
+                    <h4>Scripts de Manutenção</h4>
+                    <p>Execute tarefas automatizadas de limpeza e otimização do sistema.</p>
+
+                    <div class="automation-card">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <strong>Limpeza de Cache Profunda</strong>
+                            <span class="status-badge" id="auto-status">Inativo</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="auto-progress"></div>
+                        </div>
+                        <button class="mgmt-btn" style="margin-top: 15px; width: 100%;"
+                            onclick="sysRunAutomation()">Executar Script</button>
+                        <div id="auto-log" class="console-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- START MENU / ABOUT ME (Hidden by default) -->
+    <div id="start-menu" class="start-menu">
+        <div class="profile-header">
+            <div class="profile-img-container">
+                <img src="https://ui-avatars.com/api/?name=Julio+Andrade&background=0D8ABC&color=fff&size=128"
+                    alt="Profile" class="profile-img">
+                <div class="status-indicator"></div>
+            </div>
+            <div class="profile-info">
+                <h3>Julio Cesar Andrade</h3>
+                <span class="profile-role">Full Stack Developer</span>
+            </div>
+        </div>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section">
+            <h4>Redes Sociais</h4>
+            <a href="https://github.com/JulioAndrade07-art" target="_blank" class="menu-link">
+                <span class="link-icon">🐙</span> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/julio-cesar-andrade-802950206/" target="_blank" class="menu-link">
+                <span class="link-icon">💼</span> LinkedIn
+            </a>
+            <a href="https://www.instagram.com/julioandrade0706/" target="_blank" class="menu-link">
+                <span class="link-icon">📸</span> Instagram
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <h4>Contato</h4>
+            <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span class="contact-value">julioandrade0706@gmail.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Tel:</span>
+                <span class="contact-value">+55 34 988516219</span>
+            </div>
+        </div>
+
+        <div class="menu-footer">
+            <button class="menu-action-btn" onclick="toggleStartMenu()">
+                <span style="margin-right: 5px;">🔒</span> Bloquear
+            </button>
+            <button class="menu-action-btn power-btn" onclick="location.reload()">
+                <span style="margin-right: 5px;">⭕</span> Reiniciar
+            </button>
+        </div>
+    </div>
+
+    <!-- TASKBAR -->
+    <div id="taskbar">
+        <div class="start-btn" onclick="toggleStartMenu()">
+            <div class="start-icon">❖</div>
+        </div>
+
+        <div class="taskbar-divider"></div>
+
+        <div class="task-dock">
+            <!-- Dock Icons (Shortcuts) -->
+            <div class="dock-item" onclick="openWindow('win-welcome')" title="Bem-vindo">
+                <span style="color: var(--neon-pink);">★</span>
+            </div>
+            <div class="dock-item" onclick="openWindow('win-custom-js')" title="Dev Console">
+                <span style="color: var(--neon-blue);">&lt;/&gt;</span>
+            </div>
+            <div class="dock-item" onclick="openWindow('win-status')" title="Sistema">
+                <span style="color: #0f0;">⚡</span>
+            </div>
+            <div class="dock-item" onclick="openWindow('win-calc')" title="Calculadora">
+                <span style="color: var(--neon-cyan);">+</span>
+            </div>
+            <div class="dock-item" onclick="openWindow('win-mgmt')" title="Gestão">
+                <span style="color: #ff9900;">⛔</span>
+            </div>
+        </div>
+
+        <div class="system-tray">
+            <div class="tray-item" style="color: var(--neon-blue);">WIFI_ON</div>
+            <div class="tray-item" id="clock">00:00:00</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
