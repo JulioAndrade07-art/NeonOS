@@ -464,7 +464,233 @@ document.addEventListener('click', (e) => {
     }
 });
 
+
+// --- INTELLIGENT TEXT EDITOR LOGIC ---
+
+function editorExec(command, value = null) {
+    document.execCommand(command, false, value);
+    document.getElementById('editor-area').focus();
+    editorUpdateStats();
+}
+
+function editorToggleFocus() {
+    const win = document.getElementById('win-text-editor');
+    win.classList.toggle('focus-mode');
+
+    // Add hint if not exists
+    if (!document.querySelector('.focus-hint')) {
+        const hint = document.createElement('div');
+        hint.className = 'focus-hint';
+        hint.textContent = 'Clique no ícone de olho ou pressione ESC para sair';
+        document.body.appendChild(hint);
+    }
+}
+
+// Auto-save & Stats
+const editorArea = document.getElementById('editor-area');
+const wordCountEl = document.getElementById('word-count');
+const charCountEl = document.getElementById('char-count');
+const editorStatus = document.getElementById('editor-status');
+
+if (editorArea) {
+    // Load saved content
+    const saved = localStorage.getItem('neon_editor_content');
+    if (saved) {
+        editorArea.innerHTML = saved;
+        editorUpdateStats();
+    }
+
+    editorArea.addEventListener('input', () => {
+        // Save
+        localStorage.setItem('neon_editor_content', editorArea.innerHTML);
+        editorStatus.textContent = 'Salvando...';
+        setTimeout(() => { editorStatus.textContent = 'Salvo'; }, 1000);
+
+        editorUpdateStats();
+    });
+
+    editorArea.addEventListener('keydown', (e) => {
+        // Shortcuts
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === 'b') { e.preventDefault(); editorExec('bold'); }
+            if (e.key === 'i') { e.preventDefault(); editorExec('italic'); }
+        }
+    });
+}
+
+function editorUpdateStats() {
+    if (!editorArea) return;
+    const text = editorArea.innerText || '';
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const chars = text.length;
+
+    if (wordCountEl) wordCountEl.textContent = `${words} palavras`;
+    if (charCountEl) charCountEl.textContent = `${chars} caracteres`;
+
+    // Highlight buttons
+    ['bold', 'italic', 'underline'].forEach(cmd => {
+        // Simple check doesn't always work with execCommand state, but good enough for visual
+        // We'll skip complex state checks for this simple version
+    });
+}
+
+// Escape key to exit focus mode
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const win = document.getElementById('win-text-editor');
+        if (win && win.classList.contains('focus-mode')) {
+            editorToggleFocus();
+        }
+    }
+});
+
+
+// --- TASK SYSTEM LOGIC ---
+
+let tasks = JSON.parse(localStorage.getItem('neon_tasks') || '[]');
+
+function taskRender() {
+    ['todo', 'doing', 'done'].forEach(status => {
+        const list = document.getElementById(`list-${status}`);
+        const count = document.getElementById(`count-${status}`);
+        if (!list) return;
+
+        list.innerHTML = '';
+        const filtered = tasks.filter(t => t.status === status);
+        count.textContent = filtered.length;
+
+        filtered.forEach(t => {
+            const card = document.createElement('div');
+            card.className = `task-card priority-${t.priority}`;
+            card.draggable = true;
+            card.id = `task-${t.id}`;
+            card.innerHTML = `
+                <div class="task-title">${t.title}</div>
+                <div class="task-meta">
+                    <span>${new Date(t.date).toLocaleDateString()}</span>
+                    <span class="delete-task" onclick="taskDelete(${t.id}, event)">🗑 expurgar</span>
+                </div>
+            `;
+
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', t.id);
+                setTimeout(() => card.classList.add('dragging'), 0);
+            });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+
+            list.appendChild(card);
+        });
+    });
+}
+
+function taskAllowDrop(e) {
+    e.preventDefault();
+}
+
+function taskDrop(e, status) {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text/plain');
+    const task = tasks.find(t => t.id == id);
+    if (task) {
+        task.status = status;
+        taskSave();
+        taskRender();
+    }
+}
+
+function taskShowAddModal() {
+    document.getElementById('task-modal').classList.remove('hidden');
+    document.getElementById('task-input-title').focus();
+}
+
+function taskCloseModal() {
+    document.getElementById('task-modal').classList.add('hidden');
+    document.getElementById('task-input-title').value = '';
+}
+
+function taskAddTask() {
+    const title = document.getElementById('task-input-title').value;
+    const priority = document.getElementById('task-input-priority').value;
+
+    if (!title) return;
+
+    tasks.push({
+        id: Date.now(),
+        title,
+        priority,
+        status: 'todo',
+        date: new Date()
+    });
+
+    taskSave();
+    taskRender();
+    taskCloseModal();
+}
+
+function taskDelete(id, e) {
+    if (e) e.stopPropagation();
+    if (confirm('Deletar essa tarefa?')) {
+        tasks = tasks.filter(t => t.id != id);
+        taskSave();
+        taskRender();
+    }
+}
+
+function taskSave() {
+    localStorage.setItem('neon_tasks', JSON.stringify(tasks));
+}
+
+// Initial Render
+taskRender();
+
+
+// --- SPOTIFY CLONE LOGIC ---
+let spIsPlaying = false;
+let spCurrentSong = { title: "Neon Vibes", artist: "Unknown Artist", duration: 200 };
+let spProgress = 0;
+let spInterval = null;
+
+function spPlay(id) {
+    const titles = ["Neon Vibes", "Daily Mix 1", "Coding Mode", "Top Brasil", "Midnight City", "Blinding Lights", "Nightcall"];
+    const artists = ["Unknown", "Spotify", "Focus", "Charts", "M83", "The Weeknd", "Kavinsky"];
+
+    spCurrentSong.title = titles[id] || "Unknown Song";
+    spCurrentSong.artist = artists[id] || "Unknown Artist";
+
+    document.getElementById('sp-current-track').textContent = spCurrentSong.title;
+    document.getElementById('sp-current-artist').textContent = spCurrentSong.artist;
+
+    spIsPlaying = true;
+    spUpdateBtn();
+    spStartTimer();
+}
+
+function spTogglePlay() {
+    spIsPlaying = !spIsPlaying;
+    spUpdateBtn();
+    if (spIsPlaying) spStartTimer();
+    else clearInterval(spInterval);
+}
+
+function spUpdateBtn() {
+    const btn = document.getElementById('sp-play-btn');
+    btn.textContent = spIsPlaying ? "⏸" : "▶";
+}
+
+function spStartTimer() {
+    clearInterval(spInterval);
+    spInterval = setInterval(() => {
+        if (!spIsPlaying) return;
+        spProgress += 0.5; // fake speed
+        if (spProgress > 100) spProgress = 0;
+
+        const bar = document.getElementById('sp-progress');
+        if (bar) bar.style.width = spProgress + '%';
+    }, 100);
+}
+
 // --- INITIAL SETUP ---
+
 // Open welcome window on load with a slight delay for effect
 window.addEventListener('load', () => {
     setTimeout(() => {

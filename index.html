@@ -43,6 +43,24 @@
             <div class="app-name">Gestão</div>
         </div>
 
+        <!-- アイコン 6: Text Editor -->
+        <div class="app-icon" onclick="openWindow('win-text-editor')">
+            <div class="icon-box" style="color: var(--neon-purple); font-size: 24px;">✎</div>
+            <div class="app-name">Editor</div>
+        </div>
+
+        <!-- アイコン 7: Task System -->
+        <div class="app-icon" onclick="openWindow('win-tasks')">
+            <div class="icon-box" style="color: #00d4ff; font-size: 24px;">✓</div>
+            <div class="app-name">Tarefas</div>
+        </div>
+
+        <!-- アイコン 8: Spotify -->
+        <div class="app-icon" onclick="openWindow('win-spotify')">
+            <div class="icon-box" style="color: #1DB954; font-size: 24px;">♫</div>
+            <div class="app-name">Spotify</div>
+        </div>
+
     </div>
 
     <!-- WINDOWS CONTAINER -->
@@ -306,6 +324,216 @@
         </div>
     </div>
 
+    <!-- WINDOW 6: Intelligent Text Editor -->
+    <div id="win-text-editor" class="window" style="width: 700px; height: 500px;">
+        <div class="window-header">
+            <div class="window-title">Neon Editor Pro</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-text-editor')"></button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0; display: flex; flex-direction: column;">
+
+            <!-- Toolbar -->
+            <div class="editor-toolbar">
+                <div class="toolbar-group">
+                    <button class="editor-btn" onclick="editorExec('bold')" title="Negrito (Ctrl+B)"><b>B</b></button>
+                    <button class="editor-btn" onclick="editorExec('italic')" title="Itálico (Ctrl+I)"><i>I</i></button>
+                    <button class="editor-btn" onclick="editorExec('underline')" title="Sublinhado"><u>U</u></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="editor-btn" onclick="editorExec('justifyLeft')" title="Alinhar Esquerda">⇤</button>
+                    <button class="editor-btn" onclick="editorExec('justifyCenter')" title="Centralizar">↔</button>
+                    <button class="editor-btn" onclick="editorExec('justifyRight')" title="Alinhar Direita">⇥</button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="editor-btn" onclick="editorExec('insertUnorderedList')" title="Lista">●</button>
+                    <button class="editor-btn" onclick="editorToggleFocus()" title="Modo Foco"
+                        id="btn-focus-mode">👁️</button>
+                </div>
+                <div id="editor-status" style="font-size: 10px; color: #888; margin-left: auto;">Salvo</div>
+            </div>
+
+            <!-- Editor Area -->
+            <div id="editor-area" class="editor-content" contenteditable="true" spellcheck="false"
+                placeholder="Comece a digitar sua próxima ideia brilhante..."></div>
+
+            <!-- Footer Stats -->
+            <div class="editor-footer">
+                <span id="word-count">0 palavras</span>
+                <span id="char-count">0 caracteres</span>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- WINDOW 7: Task System (Kanban) -->
+    <div id="win-tasks" class="window" style="width: 800px; height: 550px;">
+        <div class="window-header">
+            <div class="window-title">Neon Task Board</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-tasks')"></button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0; background: rgba(0,0,0,0.2);">
+            <div class="task-toolbar">
+                <button class="task-add-btn" onclick="taskShowAddModal()">+ Nova Tarefa</button>
+                <div style="flex:1"></div>
+                <span style="font-size: 12px; color: #888;">Arraste para mover</span>
+            </div>
+
+            <div class="kanban-board">
+                <!-- Column: Todo -->
+                <div class="kanban-col" id="col-todo" ondrop="taskDrop(event, 'todo')"
+                    ondragover="taskAllowDrop(event)">
+                    <div class="col-header" style="border-color: #ff5f56;">A Fazer <span class="count-badge"
+                            id="count-todo">0</span></div>
+                    <div class="task-list" id="list-todo">
+                        <!-- Tasks go here -->
+                    </div>
+                </div>
+
+                <!-- Column: In Progress -->
+                <div class="kanban-col" id="col-doing" ondrop="taskDrop(event, 'doing')"
+                    ondragover="taskAllowDrop(event)">
+                    <div class="col-header" style="border-color: #ff9900;">Em Andamento <span class="count-badge"
+                            id="count-doing">0</span></div>
+                    <div class="task-list" id="list-doing"></div>
+                </div>
+
+                <!-- Column: Done -->
+                <div class="kanban-col" id="col-done" ondrop="taskDrop(event, 'done')"
+                    ondragover="taskAllowDrop(event)">
+                    <div class="col-header" style="border-color: #00d4ff;">Concluído <span class="count-badge"
+                            id="count-done">0</span></div>
+                    <div class="task-list" id="list-done"></div>
+                </div>
+            </div>
+
+            <!-- Simple Add Modal Overlay -->
+            <div id="task-modal" class="modal-overlay hidden">
+                <div class="modal-box">
+                    <h3>Nova Tarefa</h3>
+                    <input type="text" id="task-input-title" placeholder="Título da tarefa..." class="modal-input">
+                    <select id="task-input-priority" class="modal-input">
+                        <option value="low">Baixa Prioridade</option>
+                        <option value="medium" selected>Média Prioridade</option>
+                        <option value="high">Alta Prioridade</option>
+                    </select>
+                    <div class="modal-buttons">
+                        <button class="mgmt-btn" onclick="taskAddTask()">Adicionar</button>
+                        <button class="mgmt-btn btn-secondary" onclick="taskCloseModal()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- WINDOW 8: Spotify Clone -->
+    <div id="win-spotify" class="window" style="width: 800px; height: 500px; padding: 0;">
+        <div class="window-header" style="background: #121212;">
+            <div class="window-title" style="color: #fff;">Spotify</div>
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('win-spotify')"></button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0; background: #121212; display: flex; flex-direction: column;">
+
+            <div class="spotify-body">
+                <!-- Sidebar -->
+                <div class="sp-sidebar">
+                    <div class="sp-nav-item active">🏠 Início</div>
+                    <div class="sp-nav-item">🔍 Buscar</div>
+                    <div class="sp-nav-item">📚 Sua Biblioteca</div>
+                    <br>
+                    <div class="sp-nav-item">➕ Criar playlist</div>
+                    <div class="sp-nav-item">💜 Músicas Curtidas</div>
+                    <hr style="border-color: #282828; margin: 10px 0;">
+                    <div class="sp-playlist-list">
+                        <div class="sp-pl-item">Neon Vibes 2077</div>
+                        <div class="sp-pl-item">Coding Mode</div>
+                        <div class="sp-pl-item">Lofi Hip Hop</div>
+                        <div class="sp-pl-item">Synthwave Classics</div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="sp-main">
+                    <div class="sp-gradient-bg"></div>
+                    <h2>Boa noite</h2>
+                    <div class="sp-grid">
+                        <div class="sp-card" onclick="spPlay(1)">
+                            <div class="sp-card-img" style="background: linear-gradient(45deg, #f09, #30f);"></div>
+                            <h4>Daily Mix 1</h4>
+                            <p>Synthwave, Retrowave mix...</p>
+                        </div>
+                        <div class="sp-card" onclick="spPlay(2)">
+                            <div class="sp-card-img" style="background: linear-gradient(45deg, #09f, #0f9);"></div>
+                            <h4>Coding Focus</h4>
+                            <p>Deep work music...</p>
+                        </div>
+                        <div class="sp-card" onclick="spPlay(3)">
+                            <div class="sp-card-img" style="background: linear-gradient(45deg, #ff0, #f00);"></div>
+                            <h4>Top Brasil</h4>
+                            <p>As mais tocadas...</p>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 20px;">Feito para Goiaba</h3>
+                    <div class="sp-row">
+                        <div class="sp-song-row" onclick="spPlay(4)">
+                            <span style="color: #1DB954;">1</span>
+                            <span>Midnight City</span>
+                            <span style="margin-left:auto;">4:03</span>
+                        </div>
+                        <div class="sp-song-row" onclick="spPlay(5)">
+                            <span style="color: #aaa;">2</span>
+                            <span>Blinding Lights</span>
+                            <span style="margin-left:auto;">3:20</span>
+                        </div>
+                        <div class="sp-song-row" onclick="spPlay(6)">
+                            <span style="color: #aaa;">3</span>
+                            <span>Nightcall</span>
+                            <span style="margin-left:auto;">4:18</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Bar -->
+            <div class="sp-player-bar">
+                <div class="sp-pb-left">
+                    <div class="sp-album-art"></div>
+                    <div class="sp-track-info">
+                        <div class="sp-track-name" id="sp-current-track">Escolha uma música</div>
+                        <div class="sp-track-artist" id="sp-current-artist">--</div>
+                    </div>
+                    <span style="margin-left: 10px; color: #1DB954;">♥</span>
+                </div>
+                <div class="sp-pb-center">
+                    <div class="sp-controls">
+                        <span>⏮</span>
+                        <span class="sp-play-btn" id="sp-play-btn" onclick="spTogglePlay()">▶</span>
+                        <span>⏭</span>
+                    </div>
+                    <div class="sp-progress-container">
+                        <span style="font-size: 11px;">0:00</span>
+                        <div class="sp-progress-bar">
+                            <div class="sp-progress-fill" id="sp-progress"></div>
+                        </div>
+                        <span style="font-size: 11px;">3:45</span>
+                    </div>
+                </div>
+                <div class="sp-pb-right">
+                    🔊 <input type="range" class="sp-vol-slider">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- START MENU / ABOUT ME (Hidden by default) -->
     <div id="start-menu" class="start-menu">
         <div class="profile-header">
@@ -381,6 +609,18 @@
             </div>
             <div class="dock-item" onclick="openWindow('win-mgmt')" title="Gestão">
                 <span style="color: #ff9900;">⛔</span>
+            </div>
+            <!-- Text Editor Shortcut -->
+            <div class="dock-item" onclick="openWindow('win-text-editor')" title="Editor de Texto">
+                <span style="color: #b026ff;">✎</span>
+            </div>
+            <!-- Tasks Shortcut -->
+            <div class="dock-item" onclick="openWindow('win-tasks')" title="Tarefas">
+                <span style="color: #00d4ff;">✓</span>
+            </div>
+            <!-- Spotify Shortcut -->
+            <div class="dock-item" onclick="openWindow('win-spotify')" title="Spotify">
+                <span style="color: #1DB954;">♫</span>
             </div>
         </div>
 
