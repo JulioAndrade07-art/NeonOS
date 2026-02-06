@@ -1485,6 +1485,7 @@ tr:hover {
     color: #a7a7a7;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -1626,4 +1627,220 @@ tr:hover {
     width: 100px;
     margin-left: 10px;
     cursor: pointer;
+}
+
+/* --- RESOURCE SWITCHER APP STYLES --- */
+
+/* Card Container */
+.switch-card {
+    width: 220px;
+    height: 70px;
+    background: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+/* Hover Effect */
+.switch-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Active Effect */
+.switch-card:active {
+    transform: scale(0.98);
+}
+
+/* State: OFF (Default styling covered above, specific tweaks) */
+.switch-card[data-on='false'] {
+    background: #e0e0e0;
+    border-left: 5px solid #ff5f56;
+    /* Red indicator */
+}
+
+/* State: ON */
+.switch-card[data-on='true'] {
+    background: #ffcc00;
+    /* Yellow background */
+    border-left: 5px solid #00d4ff;
+    /* Blue/Cyan indicator or Green */
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+/* Label Styling */
+.switch-card .label {
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #333;
+    z-index: 2;
+    text-transform: uppercase;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Battery Drawing */
+.battery {
+    width: 40px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    position: relative;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    z-index: 2;
+}
+
+/* Battery Tip (Pseudo-element) */
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 10px;
+    background: #333;
+    border-radius: 0 2px 2px 0;
+}
+
+/* Battery Level (Animated) */
+.battery-level {
+    height: 100%;
+    border-radius: 1px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Level State: ON */
+.switch-card[data-on='true'] .battery-level {
+    width: 100%;
+    background-color: #0f0;
+    /* Neon Green */
+    box-shadow: 0 0 5px #0f0;
+}
+
+/* Level State: OFF */
+.switch-card[data-on='false'] .battery-level {
+    width: 15%;
+    background-color: #ff3333;
+    /* Red */
+    box-shadow: none;
+}
+
+
+/* --- CURRENCY CONVERTER APP STYLES --- */
+
+.currency-converter {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #666;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+}
+
+/* Status variants */
+.status-loading .status-dot {
+    background: #ffcc00;
+    box-shadow: 0 0 10px #ffcc00;
+    animation: pulse 1s infinite;
+}
+
+.status-success .status-dot {
+    background: #0f0;
+    box-shadow: 0 0 10px #0f0;
+}
+
+.status-error .status-dot {
+    background: #ff3333;
+    box-shadow: 0 0 10px #ff3333;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--neon-blue);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.input-group input,
+.curr-select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus,
+.curr-select:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.curr-select {
+    cursor: pointer;
+    appearance: none;
+    /* Hide default arrow to style better if desired, but default is ok for now */
+}
+
+.curr-select option {
+    background: #1a1a2e;
+    /* Fix for dropdown background in dark mode */
+    color: #fff;
+}
+
+.result-area {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+    /* Push to bottom if space permits */
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
 }

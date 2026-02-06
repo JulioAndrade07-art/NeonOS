@@ -697,3 +697,215 @@ window.addEventListener('load', () => {
         openWindow('win-welcome');
     }, 500);
 });
+
+
+// --- RESOURCES APP LOGIC ---
+function toggleResource(element) {
+    if (!element) return;
+
+    // Get current state
+    const currentState = element.getAttribute('data-on');
+
+    // If it's ON, just turn it OFF (always allowed)
+    if (currentState === 'true') {
+        element.setAttribute('data-on', 'false');
+    } else {
+        // If turning ON, check the others
+        // "Pick Two" Logic: Can't have all 3
+        const allSwitches = Array.from(document.querySelectorAll('#win-resources .switch-card'));
+        const activeSwitches = allSwitches.filter(sw => sw.getAttribute('data-on') === 'true');
+
+        if (activeSwitches.length >= 2) {
+            // We already have 2 active. If we turn this one on, we must turn one off.
+            // Requirement logic: "se tempo e energia tiver ligado, dinheio vira desligado"
+            // Generalizing: Randomly pick one of the CURRENTLY ACTIVE to turn off.
+            // Or prioritize? User said "when clicking money turns off some other".
+            // Let's make it random for the joke effect, or cyclic.
+
+            // Filter out the one we are clicking (it's not active yet)
+            const otherActive = activeSwitches.filter(sw => sw !== element);
+
+            if (otherActive.length > 0) {
+                // Pick a random one to turn off
+                const randomVictim = otherActive[Math.floor(Math.random() * otherActive.length)];
+                randomVictim.setAttribute('data-on', 'false');
+            }
+        }
+
+        // Turn the clicked one ON
+        element.setAttribute('data-on', 'true');
+    }
+}
+
+
+// --- CURRENCY CONVERTER APP LOGIC ---
+
+const CurrencyApp = {
+    // API Public provided by ExchangeRate-API (Open)
+    // Docs: https://www.exchangerate-api.com/docs/free
+    apiUrl: 'https://open.er-api.com/v6/latest/USD',
+
+    // Cache settings (1 hour)
+    cacheKey: 'neon_currency_rates',
+    cacheDuration: 3600000,
+
+    elements: {
+        amount: null,
+        from: null,
+        to: null,
+        result: null,
+        status: null,
+        statusText: null,
+        rateInfo: null,
+        swapBtn: null
+    },
+
+    rates: {},
+
+    init: function () {
+        // Cache DOM elements
+        this.elements.amount = document.getElementById('curr-amount');
+        this.elements.from = document.getElementById('curr-from');
+        this.elements.to = document.getElementById('curr-to');
+        this.elements.result = document.getElementById('curr-result');
+        this.elements.status = document.getElementById('curr-status');
+        this.elements.statusText = document.getElementById('curr-status-text');
+        this.elements.rateInfo = document.getElementById('curr-rate-info');
+        this.elements.swapBtn = document.getElementById('curr-swap-btn');
+
+        if (!this.elements.amount) return; // Guard clause if elements missing
+
+        // Event Listeners
+        this.elements.amount.addEventListener('input', () => this.calculate());
+        this.elements.from.addEventListener('change', () => this.calculate());
+        this.elements.to.addEventListener('change', () => this.calculate());
+
+        if (this.elements.swapBtn) {
+            this.elements.swapBtn.addEventListener('click', () => {
+                const temp = this.elements.from.value;
+                this.elements.from.value = this.elements.to.value;
+                this.elements.to.value = temp;
+                this.calculate();
+            });
+        }
+
+        // Initial Load
+        this.loadRates();
+    },
+
+    loadRates: async function (force = false) {
+        this.updateStatus('loading', 'Atualizando taxas...');
+
+        // Check Cache
+        const cached = localStorage.getItem(this.cacheKey);
+        if (!force && cached) {
+            const data = JSON.parse(cached);
+            const now = Date.now();
+            if (now - data.timestamp < this.cacheDuration) {
+                console.log('[Currency] Using cached rates');
+                this.rates = data.rates;
+                this.updateStatus('success');
+                this.calculate();
+                return;
+            }
+        }
+
+        // Fetch API
+        try {
+            console.log('[Currency] Fetching new rates...');
+            const response = await fetch(this.apiUrl);
+            if (!response.ok) throw new Error('API Error');
+
+            const data = await response.json();
+
+            if (data.result === 'success') {
+                this.rates = data.rates;
+
+                // Save to cache
+                localStorage.setItem(this.cacheKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    rates: this.rates
+                }));
+
+                this.updateStatus('success');
+                this.calculate();
+            } else {
+                throw new Error('API Error Data');
+            }
+        } catch (e) {
+            console.error('[Currency] Error:', e);
+            this.updateStatus('error', 'Erro de conex�o');
+            // Try to use old cache if valid structure even if expired
+            if (cached) {
+                this.rates = JSON.parse(cached).rates;
+                this.calculate();
+            }
+        }
+    },
+
+    calculate: function () {
+        if (!this.rates || Object.keys(this.rates).length === 0) return;
+
+        const amount = parseFloat(this.elements.amount.value);
+        const from = this.elements.from.value;
+        const to = this.elements.to.value;
+
+        if (isNaN(amount)) {
+            this.elements.result.textContent = '---';
+            return;
+        }
+
+        // Logic: Convert FROM to USD, then USD to TO
+        // Since base is USD:
+        // rate(USD -> FROM) = rates[from]
+        // rate(USD -> TO) = rates[to]
+        // Value in USD = amount / rates[from]
+        // Value in TO = Value in USD * rates[to]
+
+        const rateFrom = this.rates[from];
+        const rateTo = this.rates[to];
+
+        if (!rateFrom || !rateTo) {
+            this.elements.result.textContent = 'Erro moeda';
+            return;
+        }
+
+        const result = (amount / rateFrom) * rateTo;
+
+        // Formatting
+        const currencySym = {
+            'BRL': 'R$', 'USD': '$', 'EUR': '�', 'JPY': '�', 'GBP': '�'
+        };
+        const sym = currencySym[to] || to;
+
+        this.elements.result.textContent = `${sym} ${result.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        // Show exchange rate 1:1
+        const oneUnitRate = (1 / rateFrom) * rateTo;
+        this.elements.rateInfo.textContent = `1 ${from} = ${oneUnitRate.toFixed(4)} ${to}`;
+    },
+
+    updateStatus: function (state, text) {
+        // Reset classes
+        if (this.elements.status) {
+            this.elements.status.className = 'status-indicator';
+
+            // Add new class
+            if (state === 'loading') this.elements.status.classList.add('status-loading');
+            if (state === 'success') this.elements.status.classList.add('status-success');
+            if (state === 'error') this.elements.status.classList.add('status-error');
+
+            this.elements.statusText.textContent = text;
+        }
+    }
+};
+
+// Expose global function for update button
+function currRefreshParams() {
+    CurrencyApp.loadRates(true);
+}
+
+// Initialize when DOM is ready (or slightly delayed to ensure elements exist if injected)
+setTimeout(() => {
+    CurrencyApp.init();
+}, 1000);
