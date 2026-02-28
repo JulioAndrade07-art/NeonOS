@@ -193,19 +193,15 @@ function calcDeleteLast() {
 }
 
 function calcCalculate() {
+    const expression = calcCurrentInput;
+
     try {
-        // Safe evaluation (basic)
-        // Check for division by zero
-        if (calcCurrentInput.includes('/0')) {
-            calcCurrentInput = 'Erro';
-        } else {
-            // Using Function constructor as a slightly safer eval alias for simple math
-            // But eval is generally discouraged. However for a simple local calculator it's ok-ish.
-            // Let's replace '×' with '*' and ' ÷' with '/' if we used symbols
-            // But we used standard symbols in logic.
-            const result = new Function('return ' + calcCurrentInput)();
-            calcCurrentInput = String(result);
-        }
+        // Using Function constructor as a slightly safer eval alias for simple math
+        // But eval is generally discouraged. However for a simple local calculator it's ok-ish.
+        const result = new Function('return ' + expression)();
+
+        // Handle invalid numeric outcomes (Infinity/NaN), e.g. division by zero
+        calcCurrentInput = Number.isFinite(result) ? String(result) : 'Erro';
     } catch (e) {
         calcCurrentInput = 'Erro';
     }
@@ -213,10 +209,10 @@ function calcCalculate() {
     calcUpdateDisplay();
 
     // Add to history
-    calcAddToHistory();
+    calcAddToHistory(expression, calcCurrentInput);
 }
 
-function calcAddToHistory() {
+function calcAddToHistory(expression, result) {
     const list = document.getElementById('calc-historyList');
     if (!list) return;
 
@@ -224,7 +220,8 @@ function calcAddToHistory() {
     const div = document.createElement('div');
     div.className = 'history-item';
     div.innerHTML = `
-                <div class="hist-res">${calcCurrentInput}</div>
+                <div class="hist-exp">${expression}</div>
+                <div class="hist-res">${result}</div>
             `;
     // Prepend
     list.prepend(div);
