@@ -1,0 +1,793 @@
+
+=================
+1) A ESTRUTURA DOS ÁTOMOS 
+ 
+ 
+1.1. Estrutura Atômica 
+ 
+A matéria, seja no estado líquido, sólido ou gasoso, é constituída por átomos. Os 
+átomos são constituídos por partículas elementares: os prótons,  os nêutrons e os 
+elétrons. A Tabela I mostra algumas características das partículas atômicas.  
+ 
+Tabela I – Características das partículas atômicas. 
+Partícula Símbolo Carga Massa 
+Próton P +e 1,67262 x 10-27 kg 
+Nêutron N 0 1,67493 x 10-27 kg 
+Elétron e- -e 9,10939 x 10-31 kg 
+ 
+As massas dos prótons e dos nêutrons são praticamente iguais. Pode-se notar 
+que a massa do elétron é cerca de 1836 ve zes menor que a massa do próton. Os 
+nêutrons são eletricamente neutros. Os prót ons e elétrons têm cargas opostas e de 
+mesma intensidade. A carga elementar é igual a e=1,602x10-19 C. 
+Os átomos possuem um núcleo denso, positivamente carregado, envolvido por 
+uma nuvem de elétrons. O raio  do núcleo é aproximadamente 5x10 -15 m e o diâmetro 
+externo da nuvem eletrônica, isto é, o diâmetro do próprio át omo, é cerca de 2x10-10 m, 
+sendo da ordem de 10 5 vezes maior que o diâmetro nuclear. Para efeito de 
+comparação, se o núcleo tivesse o tamanho de uma cabeça de alfinete, o átomo teria 
+aproximadamente 100 metros de diâmetro.  
+Os prótons e os nêutrons são chamados nucleons e cons tituem o núcleo 
+atômico. O número de prótons no núcleo de um átomo é chamado de Número Atômico 
+Z, sendo que Z distingue os átomos na natureza. O número de nêutrons no núcleo tem 
+símbolo N. O número total de partículas no núcleo de um átomo é chamado de Número 
+de Massa A, sendo que A = Z + N.  
+Um átomo eletricamente neutro contém um número de elétrons igual ao número 
+de prótons (Z), sendo que a carga elétrica total do átomo é nula. Os elétrons estão 
+localizados ao redor do núcleo em orbitais def inidos pelas suas energias. Átomos com 
+números de elétrons dife rentes do número de prótons são chamados de íons. Um 
+átomo com excesso de elétrons é eletri camente negativo e chamado de ânion. Um 
+átomo com falta de elétrons é eletricamente positivo e chamado de cátion.  
+Em 1909, o físico americano Robert Millikan mostrou que  a carga elétrica é 
+quantizada e sempre aparece em múltiplos inte iros da carga elementar         
+e=1,602x10-19 C. Todas as partículas elementares (elétrons, prótons, nêutrons, múons, 
+mésons pi, etc.) ou têm carga +e, ou –e ou não tem carga. Partículas formadas pela 
+combinação de partículas elementares podem ter cargas ±e, ±2e, ±3e, etc. Um átomo 
+com Z prótons no núcleo tem Z elétrons fora do núcleo e é eletricamente neutro.  
+Por exemplo, o átomo de ouro eletricam ente neutro com Z=79 e A=197 tem 79 
+prótons e 118 nêutrons em seu núcleo, e 79 elétrons orbitando ao redor do núcleo. A 
+simbologia para descrever este átomo é . Au197
+79 
+Isótopos: Os isótopos são átomos com mesmo Z ma s diferentes A (e diferentes N). O 
+Au tem 30 isótopos, de  até . Somente o  é estável, os 
+outros são radioativos que decaem emit indo partículas e têm vidas médias 
+desde segundos até meses. 
+Au175
+79 Au204
+79 Au197
+79
+ 
+Raio Nuclear: O raio médio característico é dado por R=R 0A1/3, onde A é o número de 
+massa e R0=1,2 fm = 1,2x10-15 m. 
+ 
+Volume Nuclear: A  R  R  V3
+0
+3
+3
+4
+3
+4 π = π =       ( 1 . 1 )  
+ 
+Massa Atômica: A massa atômica é dada em unida des de massa atômica (uma), 
+escolhida de modo que a massa atômica do  seja exatamente 
+12 uma. Por exemplo, o  tem massa atômica 197 uma. Pode-
+se usar a conversão:   
+C12
+6
+Au197
+79
+1 uma = 1,661x10-27 kg  (1.2) 
+ 
+ 
+Massa do átomo: Dada por            2310 02 , 6x
+atômica  Massa
+Na
+atômica  Massaátomo  do  Massa ==  
+Expresso em gramaátomoátomos
+gramaátomo g
+átomo
+g
+−
+−= /
+/  
+ 
+ 
+Energia de ligação nuclear: A energia de ligação nuclear é a energia total necessa´ria 
+para decompor um núcleo em seus prótons e nêutros 
+constituintes. Esta energi a pode ser encontrada pela 
+relação relativística , sendo que 2.c m EΔ = Δ mΔ  é a 
+diferença de massa entre as  partículas individuais e o 
+núcleo. A tabela e os gráficos anexos mostram os valores 
+da energia de ligação para os núcleos conhecidos. 
+ 
+  O átomo na “Antiga” Mecânica Quântica
+• Por volta de 1910 acumularam-se inúmeras evidências 
+experimentais de que os átomos continham elétrons (aquelas pq ( q
+partículas que compunham os raios catódicos e conduziam a 
+eletricidade).
+Mas os átomos eram neutros. Portanto, deviam possuir uma 
+quantidade igual de carga positiva. 
+Modelo de Thomson (1910)
+Modelo de Thomson: previa uma 
+Os átomos seriam compostos 
+por elétrons pontuais, 
+distribuídos numa massa de
+deflexão pequena das partículas α
+distribuídos numa massa de 
+carga positiva uniforme: 
+Modelo do “
+pudim de passas”.
+pp
+Exemplo histórico: estrutura do átomo
+• Ernest Rutherford (1911): descobriu a estrutura nuclear
+do átomo. Primeiro experimento de colisão de partículas 
+sub-atômicas.
+Rutherford observou grandes deflexões, 
+sugerindo um núcleo duro e pequeno
+O átomo na “Antiga” Mecânica Quântica
+• Rutherford então propôs um modelo no qual toda a carga positiva 
+dos átomos, que comportaria praticamente toda a sua massa, estaria 
+concentrada numa pequena região do seu centro: o núcleo. 
+Os elétrons, então, ficariam orbitando em torno deste núcleo:  
+Modelo “planetário”Modelo planetário .
+Entretanto, estes elétrons em 
+órbita estariam acelerados 
+(aceleração centrípeta). Assim, 
+segundo o eletromagnetismo, 
+deveriam emitir energia na forma
+deveriam emitir energia na forma 
+de radiação eletromagnética, até 
+cola
+psarem para o núcleo!
+pp
+O modelo atômico de Bohr (1913)
+Motivação experimental:
+Experimentos de espectroscopia 
+de átomos de H apresentavam 
+raias espectrais discretas :
+Série de Balmer
+656486434410 λ(Å)
+⎟⎞⎜⎛ −= 111 R
+ ⎟
+⎠
+⎜
+⎝
+222 nRH
+λ
+R 109 677 1
+n=3, 4, 5, ...
+RH =109,677 cm-1O modelo atômico de Bohr (1913)
+Baseado na idéia da “quantização” e da existência dos fótons,
+Bohr introduziu o seu modelo para o átomo de hidrogênio,
+baseado em 4 postulados:
+1) Um elétron se move em uma órbita circular em torno do 
+núcleo sob influência da atração coulombiana do núcleonúcleo sob influência da atração coulombiana do núcleo, 
+(mecânica clássica). 
+2) O elétron só pode se mover em órbitas que apresentem 
+momentos angulares L “quantizados”:
+,....,,nnL 321== h
+ ,,,O modelo atômico de Bohr (1913)
+3) O elétron fica em órbitas “estacionárias” e não emite 
+radiação eletromagnética. Portanto, a sua energia total E
+permanece constante.
+4) Radiação é emitida se um elétron, que se move inicialmente 
+numa órbita de energia Ei muda para uma órbita denuma órbita de energia  Ei , muda para uma órbita de 
+energia Ef menor que Ei.  A freqüência da radiação emitida 
+é dada por:
+h
+EE fi −=
+ν
+Em outras palavras o átomo emite um fóton
+h
+Em outras palavras, o átomo emite um  fóton.O modelo atômico de Bohr (1913)
+Considerando o núcleo em repouso, a força 
+elétrica no elétron é dada por
+v
+emp -e, m
+2
+2 1eF −=
++e
+2
+04 rF
+πε
+Pó b i i l
+vme 22 1 =
+Para uma órbita circular:
+rmr2
+04 =
+πε
+2
+2
+0
+2
+nhrn
+ε=
+rmvL = nv h=
+2
+me
+n
+π
+Qi ã d ó b i !
+Se
+hnL = rmv Quantização das órbitas!eO modelo atômico de Bohr (1913)
+Portanto, Bohr prevê que as órbitas têm raios:
+2
+h
+ε 2
+2
+0 nme
+hrn
+π
+ε= 2
+0nrrn =ou
+2
+0
+2
+0
+hr
+ε=com 529100 ,r = Åou2
+meπcom 0
+Mas: eemvUKE
+222
+⎟⎟⎞
+⎜⎜⎛++
+A i i d dif t ó bit ã d d
+Mas:
+rrUKE
+00 842
+πε
+πε −=⎟⎟
+⎠⎜⎜
+⎝
+−+=+=
+Assim, a energia das diferentes órbitas serão dadas por:
+eVmeE
+4
+6,131 −=−= eVnnhEn 2222
+08 −=−=
+εO modelo atômico de Bohr (1913)
+As freqüências emitidas nas transições seriam:
+⎟⎠
+⎞⎜⎝
+⎛ −−=−=→ 2232
+0
+4
+'
+'
+1
+'
+1
+8 nnh
+me
+h
+EE nn
+nn
+ε
+ν
+⎠⎝0
+⎟⎞⎜⎛ −=⎟⎞⎜⎛ −−== →
+H
+4
+'nn 11R11me1
+ν
+Portanto Bohr prevê que:
+⎟
+⎠
+⎜
+⎝
+⎟
+⎠
+⎜
+⎝→
+22H2232
+0'nn 'nn
+R
+n'nch8c
+ε
+λ
+Portanto, Bohr prevê que:
+1
+4
+74109 −== cmmeR 32
+0
+74,1098 == cmchRH
+ε
+sendo um êxito para  a sua teoria!O modelo de Bohr explicou as raias espectrais, conhecidas 
+á d hid ê i di i i
+para o átomo de hidrogênio, e mostrou que deveriam existir 
+outras, fora do espectro visível.
+A equação de Schrödinger e o átomo de H
+O poço de potencial onde o elétron está confinado tem a forma
+( ) e 12
+( ) r
+erU 1
+4 0
+πε−=
+A equação de Schrödinger nesse potencial é
+)r(E)r()r(U)r(m
+rrrh
+Ψ
+Ψ
+Ψ =+∇− 2
+2
+2m2A equação de Schrödinger e o átomo de H
+Como o potencial só depende de r, a função de onda pode ser 
+separada (em coordenadas esféricas)separada (em coordenadas esféricas)
+Isto produz 3 equações separadas, para as pq ç p , p
+coordenadas eletrônicas do átomo de H !
+( ) ( ) ( ) ( )φ
+θ
+ψ
+φ
+θ FPrr =Ψ ,, símbolo valores
+l
+número 
+n
+número 
+m
+número 
+n 1,2,3, 
+l 0,..,n-1
+quântico
+orbital
+quântico
+principal
+quântico
+magnético
+m -l,..,lA equação de Schrödinger e o átomo de H
+O número quântico orbital l corresponde aos estados: l = 0, 1, 2, 3, 4
+s, p, d, f, g
+3s 3p 3d
+( 200 ) ( 210 ) (2 1 1) (2 1 1)
+9/0E−
+(3,1,0)(3,0,0) (3,1,-1) (3,1,1) (3,2,1) (3,2,0) (3,2,2) (3,2,-1) (3,2,-2)
+(2,0,0) (2,1,0) (2,1,1) (2,1,-1)
+4/0E− 0
+)(rr
+ψ
+2s 2p
+0E−
+)(rnlm
+ψ
+(nlm )
+1s
+(1,0,0) (n,l,m)A equação de Schrödinger e o átomo de H
+Para o estado fundamental (n = 1, l = 0, m = 0) temos e equação radial
+)r(E)r()r(U)r(d)r(d rrrrh
+ψ
+ψ
+ψ
+ψ =+⎟⎟⎞
+⎜⎜⎛ +− 2
+2
+22
+)r(E)r()r(Udrrdrm
+ψ
+ψ+⎟⎟
+⎠⎜⎜
+⎝
++2 2
+A função de onda radial do estado fundamental (1,0,0):
+( ) 0
+3100
+1 rr
+er
+−
+−=
+ψ é o raio de Bohr0; r( )
+23
+0
+100
+rπ
+ψ éo od e o0;A equação de Schrödinger e o átomo de H
+A densidade de probabilidade associada à função de onda:
+Probabilidade de medir densidade de probabilidade dVno volume dV
+à distância r
+p
+|Ψ(r)|2
+à distância r
+x dV=
+( ) ( ) ( ) drrrdVrdrrP 222
+4π
+ψ
+ψ
+4
+( ) ( ) ( ) drrrdVrdrrP 4π
+ψ
+ψ ==
+()
+0
+3
+224 rr
+er
+r
+rP
+−
+=onde
+0rDensidade de probabilidade do H
+Estado 1s
+n=1 l=0 m=0
+Estado 2p
+n=2 l=1 m=0
+Estado 2s
+n=2 l=0 m=0
+Estado 2p
+n=2 l=1 m=
+±1
+n=2 l=1 m=
+±1Orbitais atômicos orbitais atômicos
+ 
+1.2. Níveis Quânticos de  Energia dos Elétrons 
+ 
+ Quando encontramos os estados de ener gia para o átomo de hidrogênio usando 
+o modelo de Bohr não foi le vado em consideração que aque le átomo continha duas 
+partículas com massas diferentes. Esta dificuldade pode ser solucionada usando a 
+técnica de massa reduzida. Esta técnica subs titui o átomo real por um átomo no qual o 
+núcleo é infinitamente massivo e o elétron tem massa reduzida μ dada por 
+ mM m
+M ⎟
+⎠
+⎞⎜
+⎝
+⎛
++=μ         ( 1 . 3 )  
+ 
+onde m é a massa real do elétron e M é a massa real do núcleo. O elétron de massa 
+reduzida move-se em torno do núcleo infini tamente massivo com a mesma separação 
+elétron-núcleo do átomo real. Todas as soluções de energia encontradas no modelo de 
+Bohr permanecem inalteradas. 
+ 
+Os elétrons em seus orbitais energét icos podem ser descritos por funções de 
+onda Ψ(x,y,z,t) que descrevem seus estados quânticos. Cada função de onda está 
+associada a um estado e a uma energia permitida aos elétrons. As funções de onda 
+são chamadas de autofunções e os valores de energia são chamados de autovalores. 
+Consideremos um elétron de massa reduzida μ que se move sob a ação de um 
+potencial coulombiano dado por 
+ 
+r
+Ze
+z y x
+Zez y x V V
+0
+2
+2 2 2
+0
+2
+44
+) , , ( πεπε
+−=
++ +
+−==      ( 1 . 4 )  
+ 
+onde x, y e z são as coordenad as retangulares do elétron de carga –e em relação ao 
+núcleo fixo na origem. A raiz quadrada no denominador é si mplesmente a distância r 
+que separa o elétron do núcleo. A carga nuclear é +Ze.  
+A energia total E do sistema pode ser encontrada classicamente como: 
+  
+ (Energia cinética) + (Energia potencial) = (Energia total)   (1.5) 
+ E z y x V v=+ ) , , (2
+2rμ          ( 1 . 6 )  
+ E z y x V v v vz y x =+ + + ) , , ( )(2
+2 2 2μ        ( 1 . 7 )  
+ 
+mas podemos escrever a energia cinética como  222
+2
+1
+2 2
+xxxx pv v Ec μ μ
+μμμ = = =  (1.8) 
+e temos E z y x V p p pz y x =+ + + ) , , ( )(2
+1 2 2 2
+μ       ( 1 . 9 )  
+ 
+Esta é a expressão clássica da energia total do sistema.  A expressão quântica pode ser encont rada substituindo-se as grandezas 
+dinâmicas pelos operadores diferenc iais. Dessa forma deve substituir  por  2p
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+∂
+∂+∂
+∂+∂
+∂− 2
+2
+2
+2
+2
+2
+2
+z y xh  e a energia total E deve ser alterada para ti ∂
+∂h .  
+A equação final, chamada Equação de Schröedinger para o sistema, será dada 
+pela equação de energia operando na função de onda: 
+ 
+t
+t z y xi t z y x z y x Vz
+t z y x
+y
+t z y x
+x
+t z y x
+∂
+Ψ ∂=Ψ+⎥⎦
+⎤
+⎢⎣
+⎡
+∂
+Ψ ∂+∂
+Ψ ∂+∂
+Ψ ∂− ) , , , () , , , ( ) , , () , , , ( ) , , , ( ) , , , (
+2 2
+2
+2
+2
+2
+2 2
+hh
+μ
+            ( 1 . 1 0 )  
+ 
+ É conveniente escrever esta equação como: 
+ 
+ti V ∂
+Ψ ∂= Ψ + Ψ ∇ −hh 2
+2
+2μ         ( 1 . 1 1 )  
+ 
+As soluções desta equação serão as autofunções (ou funções de ondas) e os 
+autovalores (ou energias permitidas) para os elétrons.  
+Sendo a função potencial  V(x,y,z) independente do tempo, existem soluções da 
+equação de Schroedinger do tipo 
+       (1.12) h/) , , ( ) , , , (iEte z y x t z y x−=Ψ ψ
+ 
+onde a autofunção ψ(x,y,z) é um estado estacionário  que é solução da equação de 
+Schroedinger independente do tempo dada por 
+) , , ( ) , , ( ) , , ( ) , , (2
+2
+2
+z y x E z y x z y x V z y xψψψμ =+∇ −h     ( 1 . 1 3 )  
+ 
+ A solução desta equação diferencial parcial com três coordenadas espaciais 
+independentes (x, y e z) envolve a técnica de separação de variáveis. Transformando a 
+equação diferencial em coordenadas esféricas tem-se que a solução fica na forma 
+ 
+ ) (  ) (  ) ( ) , , (ϕθϕθψ Φ Θ =r R r         ( 1 . 1 4 )  
+ 
+isto é, a solução poderá ser descrita como a multiplicação de três funções, cada uma 
+delas dependendo somente de uma das coordenadas.  
+ No caso de problemas unidimensi onais, somente um número quântico basta 
+para caracterizar um estado estacionário. No caso tridimensional, serão necessários 3 
+números quânticos para cada estado esta cionário, correspondentes aos três graus 
+independentes de liberdade dos elétrons. Estes três números quânticos, que aparecem 
+naturalmente da teoria, são representados pelos símbolos n, l e ml. O número quântico 
+n é o número quântico principal, l é o número quântico orbital e ml é o número quântico 
+magnético orbital.  Há relações importantes entre estes números quânticos, e também restrições 
+sobre os seus respectivos valores. As restrições são dadas na Tabela II. 
+ 
+Tabela II – Os três números quânticos do átomo de hidrogênio. 
+Número 
+quântico 
+Nome Valores permitidos Número de estados 
+permitidos 
+n Número quântico 
+principal 
+n = 1, 2, 3, 4, 5, ... ∞ Qualquer número 
+l Número quântico 
+orbital 
+l = 0, 1, 2, 3, 4, ..., n-1 n 
+ml Número quântico 
+magnético orbital 
+ml = -l, -l+1, ..., +l-1, +l 2l + 1 
+ 
+ 
+Por exemplo, os valores possíveis para l e ml para n = 1, 2 ou 3 são: 
+n 1 2 3 
+l 0 0 1 0 1 2 
+ml 0 0 -1, 0, +1 0 -1, 0, +1 -2, -1, 0, +1, +2
+ 
+ 
+Em virtude de razões históricas, diz- se que os estados com o mesmo número 
+quântico principal formam uma camada. Estas camadas são identificadas são 
+identificadas pelas letras K, L, M, ..., que identificam os estados n = 1, 2, 3, ... Da 
+mesma forma, os estados que têm os mesmos valores de n e de l formam uma 
+subcamada. As letras s, p, d, f, g, h, ..., são us adas para identificar os estados com       
+l = 0, 1, 2, 3, ..., respectivamente. Esta notação está resumida na Tabela III. 
+ Existem diferenças mínimas nas energias de elétrons numa mesma camada 
+mas em subcamadas diferentes.  
+ 
+Tabela III – Notação das Camadas e Subcamadas. 
+n Símbolo da 
+Camada 
+l Símbolo da 
+Subcamada 
+1 
+2 
+3 
+4 
+5 
+6 
+... 
+K 
+L 
+M 
+N 
+O 
+P 
+... 
+0 
+1 
+2 
+3 
+4 
+5 
+... 
+s 
+p 
+d 
+f 
+g 
+h 
+... 
+ 
+ 
+ 
+ 
+ 1.3. O Número Quântico Magnético do Spin 
+ 
+Nesta seção será atribuído um quarto número quântico a cada estado, o número 
+quântico magnético do spin, ms. 
+A necessidade deste novo número quântic o veio à tona em virtude de 
+características especiais dos espectros de certos gases, como os do vapor de sódio. O 
+exame atento de uma das raias mais conspícuas do espectro do sódio mostra que esta 
+raia, na realidade, é constituída por duas out ras muito próximas. Os comprimentos de 
+onda destas raias, na região amarela do espectro, são 589,0 nm e 589,6 nm. Em 1925, 
+a teoria da estrutura at ômica ainda não havia sido a dequadamente desenvolvida para 
+explicar a existência de duas raias em lugar de uma só. Para resolver esta dificuldade, 
+Samuel Goudsmidt e George  Uhlenbeck, seguindo sugestão do físico austríaco 
+Wolfgang Pauli, propuseram  a introdução de um outro número quântico, o número 
+quântico do spin, que deveria ser adicion ado ao conjunto de números quânticos que 
+descreviam um certo estado quântico. 
+ A fim de descrever o número quântico,  é cômodo (porém incorreto) pensar que o 
+elétron gira em torno do próprio eixo ao orbitar o núcleo, tal e qual a Terra gira em torno 
+do próprio eixo ao orbitar o So l. Só há duas formas de o elétron girar em torno do seu 
+eixo na sua órbita em torno do núcleo, qu e podemos definir como “sentido horário ou 
+anti-horário”. Se a direção do spin for anti-horário, o el étron tem o "spin para cima”. Se 
+a direção do spin for invertida, o elétron te m o "spin para baixo". A energia do elétron é 
+ligeiramente diferente com o spin numa e noutra direção. Feitos os cálculos, esta 
+diferença de energia explica, apropriadamente, a divisão observada da raia amarela do 
+sódio. Os números quânticos asso ciados ao spin do elétron são m
+s = 1/2, no caso do 
+spin para cima, e m s = -1/2, no caso do estado com o spin para baixo. Este número 
+quântico extra duplica o número de estados permitidos, definidos pelos números 
+quânticos n, l e ml. 
+ A descrição clássica do elétron girando em  torno do seu eixo é incorreta, pois a 
+mecânica quântica nos diz que, em virtude de o elétron não poder ser localizado no 
+espaço com precisão (Princípio de Incert eza de Heisenberg), não se pode imaginá-lo 
+girando. Apesar desta dificuldade conceitual , toda a evidência experimental suporta a 
+admissão de o elétron ter intrinsecamente uma certa propriedade que pode ser 
+caracterizada pelo número quântico magnético do spin. 
+ A Tabela IV inclui  o número quântico m s para n=2. A Tabe la V apresenta as 
+capacidades de acomodação de elétrons na camadas eletrônicas. 
+ As tabelas anexas apresentam as configurações eletrônicas dos átomos 
+conhecidos.  
+ 
+ 
+Potencial de Ionização: É a energia necessária para ionizar um certo átomo, ou seja, 
+remover um elétron de um orbital, fazendo com que o átomo 
+fica positivamente carregado (c átion). As tabelas anexas 
+apresentam os valores dos potenciais de ionização dos 
+átomos bem como os íons formados pela ionização. 
+ 
+Raio iônico: É o raio que o átomo apres enta após ionização.   
+ Tabela IV – Os valores de ms para o nível n=2. 
+n l ml ms Subcamada Camada Número de 
+elétrons na 
+subcamada 
+2 
+2 
+0 
+0 
+0 
+0 
+1/2 
+-1/2 
+2s L 2 
+2 
+2 
+2 
+2 
+2 
+2 
+1 
+1 
+1 
+1 
+1 
+1 
+1 
+1 
+0 
+0 
+-1 
+-1 
+1/2 
+-1/2 
+1/2 
+-1/2 
+1/2 
+-1/2 
+2p L 6 
+ 
+ 
+Tabela V – Capacidades de acomodação de elétrons nas camadas eletrônicas. 
+n Símbolo da 
+Camada 
+Capacidade da 
+Camada 
+2n2
+l Símbolo da 
+Subcamada 
+Capacidade da 
+Subcamada   
+2(2l+1) 
+1 
+2 
+3 
+4 
+5 
+6 
+... 
+K 
+L 
+M 
+N 
+O 
+P 
+... 
+2 
+8 
+18 
+32 
+50 
+72 
+... 
+0 
+1 
+2 
+3 
+4 
+5 
+... 
+s 
+p 
+d 
+f 
+g 
+h 
+... 
+2 
+6 
+10 
+14 
+18 
+22 
+... 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+  
+  
+ 
+ 
+      
+                   Shackelford, 1992.  
+ 
+       Shackelford, 1992.  
+  
+  
+                   Shackelford, 1992. 
+ 

@@ -14,17 +14,14 @@ function openWindow(id) {
     const win = document.getElementById(id);
     if (!win) return;
 
-    // If already open, just focus and perhaps shake/highlight?
-    // For now, check class:
+    // Toggle logic: Se a janela tiver um Toggle Switch, force-o visualmente a ficar "ligado/checked".
+    const toggleInput = win.querySelector('.neon-toggle-wrap input[type="checkbox"]');
+    if (toggleInput) {
+        toggleInput.checked = true;
+    }
+
     if (!win.classList.contains('active')) {
         win.classList.add('active');
-
-        // Reset position if needed, or center it
-        // We'll keep the CSS centering for the initial open
-        // But if it was moved, we might want to respect that?
-        // Let's reset to center for simplicity on re-open or keep last pos if visible.
-        // Actually, CSS handles initial center. If we don't clear inline top/left, it remembers position.
-        // A nice touch is to slightly offset if multiple open.
     }
     focusWindow(win);
 }
@@ -36,6 +33,23 @@ function closeWindow(id) {
         if (currentActiveWindowId === id) {
             currentActiveWindowId = null;
         }
+
+        // Sincronizar UI se fechado via atalho externo (não direto pelo toggle)
+        const toggleInput = win.querySelector('.neon-toggle-wrap input[type="checkbox"]');
+        if (toggleInput) {
+            toggleInput.checked = false;
+        }
+    }
+}
+
+// Lógica local para Toggle via GUI
+function sysToggleWindow(id, checkbox) {
+    if (checkbox && !checkbox.checked) {
+        // Se desmarcado (App off)
+        closeWindow(id);
+    } else if (checkbox && checkbox.checked) {
+        // Se ativado (App On - menos comum clicar fechar p reabrir mas garante reatividade)
+        openWindow(id);
     }
 }
 
@@ -906,3 +920,268 @@ function currRefreshParams() {
 setTimeout(() => {
     CurrencyApp.init();
 }, 1000);
+
+// --- THEME & WALLPAPER SYSTEM LOGIC ---
+function sysLoadTheme() {
+    const savedTheme = localStorage.getItem('neon_theme') || 'default';
+    if (savedTheme === 'neon-light') {
+        document.documentElement.setAttribute('data-theme', 'neon-light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+function sysToggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    if (current === 'neon-light') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('neon_theme', 'default');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'neon-light');
+        localStorage.setItem('neon_theme', 'neon-light');
+    }
+}
+
+// Inicializa no script
+sysLoadTheme();
+
+// --- WALLPAPER APP LOGIC ---
+const WallpaperApp = {
+    // Estado do App
+    state: {
+        image: null,
+        mode: 'cover',
+        zoom: 100,
+        posX: 50,
+        posY: 50
+    },
+
+    // Referências do DOM
+    el: {
+        monitor: null,
+        fileInput: null,
+        modeSelect: null,
+        zoomSlider: null,
+        zoomVal: null
+    },
+
+    drag: {
+        isDragging: false,
+        startX: 0,
+        startY: 0
+    },
+
+    init: function () {
+        this.el.monitor = document.getElementById('wp-preview-monitor');
+        this.el.fileInput = document.getElementById('wp-file-input');
+        this.el.modeSelect = document.getElementById('wp-mode-select');
+        this.el.zoomSlider = document.getElementById('wp-zoom-slider');
+        this.el.zoomVal = document.getElementById('wp-zoom-val');
+
+        if (!this.el.monitor) return; // Se a janela nao existir no DOM ignore.
+
+        // Eventos de Controles
+        this.el.fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        this.el.modeSelect.addEventListener('change', (e) => {
+            this.state.mode = e.target.value;
+            this.updatePreview();
+        });
+        this.el.zoomSlider.addEventListener('input', (e) => {
+            this.state.zoom = parseInt(e.target.value);
+            this.el.zoomVal.textContent = `${this.state.zoom}%`;
+            this.updatePreview();
+        });
+
+        // Eventos de Drag no Monitor (Arrastar Background)
+        this.el.monitor.addEventListener('mousedown', (e) => this.startDrag(e));
+        document.addEventListener('mousemove', (e) => this.doDrag(e));
+        document.addEventListener('mouseup', () => this.stopDrag());
+
+        // Carregar persistência ao inicializar o OS
+        this.loadSystemWallpaper();
+    },
+
+    handleFileUpload: function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // Imagem Base64. Em um sistema de verdade faríamos parse do blob, 
+            // no localStorage a base64 precisa ser controlada p não ultrapassar os 5mb de cota.
+            // Para não quebrar por arquivos mto pesados, desenhar em um canvas é o ideal.
+
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Limitar tamanho para n estourar limite do localstorage
+                const MAX_WIDTH = 1920;
+                const MAX_HEIGHT = 1080;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Converter de votla pra base64 (jpeg leve para economizar espaco)
+                this.state.image = canvas.toDataURL('image/jpeg', 0.85);
+
+                // Reset Posição
+                this.state.posX = 50;
+                this.state.posY = 50;
+                this.updatePreview();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
+
+    startDrag: function (e) {
+        if (!this.state.image) return;
+        this.drag.isDragging = true;
+        this.drag.startX = e.clientX;
+        this.drag.startY = e.clientY;
+    },
+
+    doDrag: function (e) {
+        if (!this.drag.isDragging) return;
+
+        // Calcular delta em Porcentagem do monitor
+        const rect = this.el.monitor.getBoundingClientRect();
+
+        const deltaX = (e.clientX - this.drag.startX) / rect.width * 100;
+        const deltaY = (e.clientY - this.drag.startY) / rect.height * 100;
+
+        // Atualizar state local
+        this.state.posX = Math.max(0, Math.min(100, this.state.posX - deltaX)); // inverted direction for intuitive grab
+        this.state.posY = Math.max(0, Math.min(100, this.state.posY - deltaY));
+
+        this.drag.startX = e.clientX;
+        this.drag.startY = e.clientY;
+
+        this.updatePreviewPosition();
+    },
+
+    stopDrag: function () {
+        this.drag.isDragging = false;
+    },
+
+    updatePreview: function () {
+        if (!this.state.image) return;
+
+        this.el.monitor.style.backgroundImage = `url(${this.state.image})`;
+
+        // Tamanho
+        if (this.state.mode === 'cover' || this.state.mode === 'contain') {
+            // O Zoom no cover/contain afeta escalando
+            this.el.monitor.style.backgroundSize = `${this.state.zoom}%`;
+            // Se mode estritamente cover mas com zoom 100%: 
+            if (this.state.zoom === 100 && this.state.mode === 'cover') this.el.monitor.style.backgroundSize = 'cover';
+            if (this.state.zoom === 100 && this.state.mode === 'contain') this.el.monitor.style.backgroundSize = 'contain';
+
+        } else if (this.state.mode === '100% 100%') {
+            this.el.monitor.style.backgroundSize = '100% 100%';
+        } else if (this.state.mode === 'center') {
+            this.el.monitor.style.backgroundSize = `${this.state.zoom}%`;
+        }
+
+        this.updatePreviewPosition();
+    },
+
+    updatePreviewPosition: function () {
+        if (!this.state.image) return;
+
+        // Se o modo for esticar, drag não faz sentido.
+        if (this.state.mode === '100% 100%') {
+            this.el.monitor.style.backgroundPosition = '0 0';
+            return;
+        }
+
+        this.el.monitor.style.backgroundPosition = `${this.state.posX}% ${this.state.posY}%`;
+    },
+
+    loadSystemWallpaper: function () {
+        const saved = localStorage.getItem('neon_wallpaper');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                this.state = data;
+
+                // Sincronizar UI da janela (se abrir)
+                if (this.el.modeSelect) this.el.modeSelect.value = data.mode;
+                if (this.el.zoomSlider) this.el.zoomSlider.value = data.zoom;
+                if (this.el.zoomVal) this.el.zoomVal.textContent = `${data.zoom}%`;
+
+                this.updatePreview();
+
+                // Aplicar ao sistema body real
+                this.applyToSystem(data);
+            } catch (e) {
+                console.error("Falha ao carregar wallpaper", e);
+            }
+        }
+    },
+
+    applyToSystem: function (data) {
+        if (!data.image) return;
+
+        const docStyle = document.documentElement.style;
+        docStyle.setProperty('--sys-wallpaper', `url(${data.image})`);
+
+        let bgSize = data.mode;
+        if (data.zoom !== 100 && data.mode !== '100% 100%') {
+            bgSize = `${data.zoom}%`;
+        }
+        docStyle.setProperty('--sys-wp-size', bgSize);
+        docStyle.setProperty('--sys-wp-pos', `${data.posX}% ${data.posY}%`);
+    }
+};
+
+// Exposição global das actions do HTML 
+function sysWpReset() {
+    WallpaperApp.state.posX = 50;
+    WallpaperApp.state.posY = 50;
+    WallpaperApp.state.zoom = 100;
+    WallpaperApp.state.mode = 'cover';
+
+    document.getElementById('wp-zoom-slider').value = 100;
+    document.getElementById('wp-zoom-val').textContent = '100%';
+    document.getElementById('wp-mode-select').value = 'cover';
+
+    WallpaperApp.updatePreview();
+}
+
+function sysWpApply() {
+    if (!WallpaperApp.state.image) {
+        alert("Por favor, faça upload de uma imagem primeiro.");
+        return;
+    }
+
+    // Salvar no localstorage
+    localStorage.setItem('neon_wallpaper', JSON.stringify(WallpaperApp.state));
+
+    // Atualizar background do SO
+    WallpaperApp.applyToSystem(WallpaperApp.state);
+
+    alert("Plano de Fundo aplicado!");
+}
+
+// Inicializa no script
+setTimeout(() => {
+    WallpaperApp.init();
+}, 200);
