@@ -40,6 +40,24 @@
 
 <body>
 
+    <!-- BOOT SCREEN -->
+    <div id="boot-screen"
+        style="position: fixed; inset: 0; background: #050510; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Consolas', monospace;">
+        <h1
+            style="color: var(--neon-blue); text-shadow: 0 0 20px rgba(0,212,255,0.8); font-size: 3rem; margin-bottom: 20px; letter-spacing: 5px;">
+            NeonOS v2.0</h1>
+        <div id="boot-terminal"
+            style="color: #0f0; font-size: 14px; margin-bottom: 20px; width: 400px; height: 100px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;">
+            <!-- Typwriter text here -->
+        </div>
+        <div
+            style="width: 400px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; box-shadow: 0 0 10px rgba(0,255,0,0.2);">
+            <div id="boot-progress"
+                style="width: 0%; height: 100%; background: #0f0; box-shadow: 0 0 10px #0f0; transition: width 0.1s linear;">
+            </div>
+        </div>
+    </div>
+
     <!-- DESKTOP GRID -->
     <div id="desktop">
 
@@ -109,6 +127,18 @@
             <div class="app-name">Átomos</div>
         </div>
 
+        <!-- Arquivos -->
+        <div class="app-icon" onclick="openWindow('win-explorer')">
+            <div class="icon-box" style="color: #ffeedd; font-size: 24px;">📁</div>
+            <div class="app-name">Arquivos</div>
+        </div>
+
+        <!-- Ajuda -->
+        <div class="app-icon" onclick="openWindow('win-help')">
+            <div class="icon-box" style="color: var(--neon-cyan); font-size: 24px;">❓</div>
+            <div class="app-name">Ajuda</div>
+        </div>
+
     </div>
 
     <!-- WINDOWS CONTAINER -->
@@ -148,33 +178,70 @@
                 </label>
             </div>
         </div>
+        <div class="window-content" id="term-app-container"
+            style="background:#050510; padding:10px; display:flex; flex-direction:column; font-family:'Consolas', monospace;">
+            <div id="term-content"
+                style="flex:1; overflow-y:auto; color:var(--text-muted); font-size:14px; margin-bottom:10px;"></div>
+            <div style="display:flex; color:#0f0; font-size:14px; margin-top: auto;">
+                <span id="term-prompt" style="margin-right:8px;">></span>
+                <input type="text" id="term-input"
+                    style="flex:1; background:transparent; border:none; color:#fff; outline:none; font-family:'Consolas', monospace;"
+                    autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINDOW 10: Ajuda / Documentação -->
+    <div id="win-help" class="window" style="width: 500px; height: 400px; background: rgba(10,10,30,0.95);">
+        <div class="window-header">
+            <div class="window-title">Documentação Interativa (Ajuda)</div>
+            <div class="window-controls">
+                <label class="neon-toggle-wrap">
+                    <input type="checkbox" onchange="sysToggleWindow('win-help', this)">
+                    <span class="neon-slider"></span>
+                </label>
+            </div>
+        </div>
         <div class="window-content">
-            <h2>Área de Desenvolvimento</h2>
-            <p>Aqui você pode injetar funcionalidades customizadas.</p>
+            <h2 style="color:var(--neon-blue);">Bem-vindo ao NeonOS</h2>
+            <p>Aqui você encontra respostas rápidas sobre como utilizar o sistema.</p>
+            <ul style="margin-left:20px; color:var(--text-muted); line-height:1.6;">
+                <li><strong>Temas:</strong> Use o Menu Iniciar para alterar o tema (Dark, Light, Synthwave).</li>
+                <li><strong>Apps:</strong> Clique nos ícones da barra de tarefas para abrir os aplicativos.</li>
+                <li><strong>Terminal:</strong> Simula um ambiente bash com comandos como <code>help</code>,
+                    <code>ls</code>, <code>cd</code>.
+                </li>
+                <li><strong>Música & Efeitos:</strong> Pode ser ativado/desativado no canto inferior direito.</li>
+                <li><strong>Janelas:</strong> Você pode arrastá-las pelo cabeçalho (apenas no desktop). No mobile as
+                    janelas ocupam toda a tela.</li>
+            </ul>
+        </div>
+    </div>
 
-            <div id="custom-app-root">
-                <!-- 
-                     !!! ESPAÇO PARA JAVASCRIPT CUSTOMIZADO !!!
-                     O container abaixo (#custom-container) está pronto para receber
-                     conteúdo dinâmico via JS.
-                -->
-                <div id="custom-container"
-                    style="padding: 10px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; min-height: 100px;">
-                    <span style="opacity: 0.5;">[Conteúdo dinâmico aparecerá aqui...]</span>
-                </div>
-
-                <div class="code-area">
-                    <span class="code-comment">// Exemplo de onde inserir seu código:</span><br>
-                    <span class="code-keyword">const</span> container = document.getElementById(<span
-                        class="code-string">'custom-container'</span>);<br>
-                    <span class="code-comment">// Adicione seus widgets, gráficos ou lógica aqui</span>
-                </div>
-
-                <!-- Botão de exemplo para provar funcionamento -->
-                <button onclick="runDemoAction()"
-                    style="margin-top: 15px; padding: 8px 16px; background: var(--neon-purple); border: none; color: white; border-radius: 4px; cursor: pointer;">
-                    Executar Demo
-                </button>
+    <!-- WINDOW 11: Explorer -->
+    <div id="win-explorer" class="window" style="width: 650px; height: 450px;">
+        <div class="window-header">
+            <div class="window-title">Gerenciador de Arquivos</div>
+            <div class="window-controls">
+                <label class="neon-toggle-wrap">
+                    <input type="checkbox" onchange="sysToggleWindow('win-explorer', this)">
+                    <span class="neon-slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="window-content" id="explorer-app-container"
+            style="padding:0; display:flex; font-family:sans-serif;">
+            <div
+                style="width:150px; background:rgba(0,0,0,0.5); border-right:1px solid var(--glass-border); padding:10px;">
+                <ul style="list-style:none; line-height:2;">
+                    <li style="color:var(--neon-blue); cursor:pointer;">📁 Documentos</li>
+                    <li style="color:var(--neon-pink); cursor:pointer;">🖼️ Imagens</li>
+                    <li style="color:var(--neon-cyan); cursor:pointer;">🎵 Músicas</li>
+                </ul>
+            </div>
+            <div style="flex:1; padding:20px; display:flex; flex-wrap:wrap; gap:15px; align-content:flex-start;"
+                id="explorer-files">
+                <!-- Arquivos gerados via JS -->
             </div>
         </div>
     </div>
@@ -1007,7 +1074,27 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="js/atomos.js"></script>
-    <script src="js/script.js"></script>
+    <!-- Core Modules -->
+    <script src="js/core/storage.js" defer></script>
+    <script src="js/core/theme.js" defer></script>
+    <script src="js/core/windowManager.js" defer></script>
+    <script src="js/core/audio.js" defer></script>
+
+    <!-- Apps -->
+    <script src="js/apps/calculator.js" defer></script>
+    <script src="js/apps/spotify.js" defer></script>
+    <script src="js/apps/tasks.js" defer></script>
+    <script src="js/apps/editor.js" defer></script>
+    <script src="js/apps/management.js" defer></script>
+    <script src="js/apps/currency.js" defer></script>
+    <script src="js/apps/wallpaper.js" defer></script>
+    <script src="js/apps/resources.js" defer></script>
+    <script src="js/apps/terminal.js" defer></script>
+    <script src="js/apps/explorer.js" defer></script>
+
+    <!-- Init -->
+    <script src="js/core/boot.js" defer></script>
+    <script src="js/core/init.js" defer></script>
 </body>
 
 </html>

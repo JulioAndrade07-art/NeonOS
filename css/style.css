@@ -2056,3 +2056,82 @@ tr:hover {
     gap: 10px;
     margin-top: auto;
 }
+
+/* --- NOVO TEMA: SYNTHWAVE --- */
+[data-theme="synthwave"] {
+    --bg-color: #2b003b;
+    --text-main: #ffccff;
+    --text-muted: #e6a8d7;
+    --text-glow: 0 0 8px rgba(255, 0, 127, 0.8);
+
+    --neon-purple: #9d00ff;
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff0055;
+    --neon-cyan: #00ffcc;
+
+    --glass-bg: rgba(43, 0, 59, 0.4);
+    --glass-hover: rgba(43, 0, 59, 0.7);
+    --glass-border: rgba(255, 0, 127, 0.5);
+    --window-gradient: repeating-linear-gradient(0deg, rgba(82, 0, 110, 0.6) 0px, rgba(82, 0, 110, 0.6) 2px, rgba(43, 0, 59, 0.8) 2px, rgba(43, 0, 59, 0.8) 4px);
+    --window-header: rgba(255, 0, 127, 0.2);
+}
+
+[data-theme="synthwave"] #desktop {
+    background-image: 
+        linear-gradient(transparent 95%, rgba(255,0,127,0.3) 100%),
+        linear-gradient(90deg, transparent 95%, rgba(255,0,127,0.3) 100%);
+    background-size: 50px 50px;
+    background-position: center bottom;
+}
+
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+    #desktop {
+        padding: 10px;
+        gap: 15px;
+    }
+
+    .window {
+        width: 100% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: translate(0, 0) scale(0.9) !important;
+        border-radius: 0;
+        resize: none;
+    }
+
+    .window.active {
+        transform: translate(0, 0) scale(1) !important;
+    }
+
+    .window.dragging {
+        transform: translate(0, 0) scale(1) !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    .window-header {
+        pointer-events: none; /* Desativa arraste no mobile para preencher a tela */
+    }
+    
+    .window-controls {
+        pointer-events: auto; /* Mas permite fechar a janela */
+    }
+
+    #taskbar {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0;
+    }
+
+    .task-dock {
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+    
+    .system-tray {
+        display: none;
+    }
+}
