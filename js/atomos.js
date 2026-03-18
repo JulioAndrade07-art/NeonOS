@@ -265,8 +265,7 @@ function atomosBigBang() {
     if (!atomosScene) return;
 
     // Clear existing
-    atomosParticles.forEach(p => atomosScene.remove(p.sprite));
-    atomosParticles = [];
+    atomosReset();
 
     // Create a burst
     const numP = 15;
@@ -287,6 +286,14 @@ function atomosBigBang() {
     });
 
     playSoundEffect('explosion');
+}
+
+function atomosReset() {
+    if (!atomosScene) return;
+
+    // Clear all existing particles from the ThreeJS scene
+    atomosParticles.forEach(p => atomosScene.remove(p.sprite));
+    atomosParticles = []; // Empty the tracking array
 }
 
 function atomosUpdateEnergy(val) {
