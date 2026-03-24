@@ -430,7 +430,7 @@ p {
     height: 40px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     font-size: 20px;
@@ -438,6 +438,10 @@ p {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     border: 1px solid transparent;
+}
+
+.dock-item.show {
+    display: flex;
 }
 
 .dock-item:hover {
@@ -982,10 +986,81 @@ tr:hover {
 }
 
 .progress-bar-fill {
-    width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #ff9900, #ff5f56);
-    transition: width 0.3s;
+    width: 0%;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* --- MAXIMIZE BUTTON & MAXIMIZED STATE --- */
+.btn-maximize {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--neon-blue);
+    border-radius: 4px;
+    width: 24px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+    outline: none;
+}
+.btn-maximize:hover {
+    background: rgba(0, 243, 255, 0.2);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+}
+.window.maximized {
+    width: 100% !important;
+    height: calc(100% - 100px) !important; /* height of taskbar area + spacing */
+    top: 50px !important; /* half of 100px if we center it? Or just top: 0 */
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    border-radius: 0;
+    margin: 0 !important;
+}
+
+/* --- TASKBAR CONTEXT MENU --- */
+#neon-context-menu {
+    position: absolute;
+    background: rgba(10, 10, 20, 0.95);
+    border: 1px solid var(--neon-pink);
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.8), 0 0 10px rgba(255, 0, 127, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    min-width: 160px;
+    transform: translateY(10px);
+    font-family: 'Consolas', sans-serif;
+}
+#neon-context-menu.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+.ctx-item {
+    padding: 10px 15px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+}
+.ctx-item:hover {
+    background: rgba(255, 51, 51, 0.15);
+    color: #ff3333;
+    text-shadow: 0 0 5px #ff3333;
 }
 
 .console-log {

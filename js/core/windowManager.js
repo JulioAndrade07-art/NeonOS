@@ -23,6 +23,11 @@ function openWindow(id) {
         win.classList.add('active');
     }
     focusWindow(win);
+
+    const dockItem = document.querySelector(`.dock-item[onclick*="'${id}'"]`);
+    if (dockItem) {
+        dockItem.classList.add('show');
+    }
 }
 
 function closeWindow(id) {
@@ -38,6 +43,11 @@ function closeWindow(id) {
         if (toggleInput) {
             toggleInput.checked = false;
         }
+    }
+
+    const dockItem = document.querySelector(`.dock-item[onclick*="'${id}'"]`);
+    if (dockItem) {
+        dockItem.classList.remove('show');
     }
 }
 
@@ -82,6 +92,11 @@ function dragStart(e) {
     currentWindow = e.target.closest('.window');
     if (!currentWindow) return;
 
+    if (currentWindow.classList.contains('maximized')) {
+        currentWindow = null;
+        return;
+    }
+
     focusWindow(currentWindow);
 
     const rect = currentWindow.getBoundingClientRect();
@@ -123,3 +138,73 @@ function dragEnd(e) {
 window.openWindow = openWindow;
 window.closeWindow = closeWindow;
 window.sysToggleWindow = sysToggleWindow;
+
+// --- MAXIMIZE & CONTEXT MENU INITIALIZATION ---
+window.addEventListener('DOMContentLoaded', () => {
+    // 1. Add Maximize buttons
+    document.querySelectorAll('.window-controls').forEach(controls => {
+        if (!controls.querySelector('.btn-maximize')) {
+            const maxBtn = document.createElement('button');
+            maxBtn.innerHTML = '🗖';
+            maxBtn.title = 'Maximizar/Restaurar';
+            maxBtn.className = 'btn-maximize';
+            maxBtn.onmousedown = e => e.stopPropagation(); // Evitar arrastar ao clicar
+            maxBtn.ontouchstart = e => e.stopPropagation();
+            maxBtn.onclick = (e) => {
+                e.stopPropagation();
+                const win = e.target.closest('.window');
+                if (win) win.classList.toggle('maximized');
+            };
+            controls.insertBefore(maxBtn, controls.firstChild);
+        }
+    });
+
+    // 2. Taskbar Context Menu (Close App)
+    const taskbar = document.getElementById('taskbar');
+    if (taskbar) {
+        taskbar.addEventListener('contextmenu', (e) => {
+            const dockItem = e.target.closest('.dock-item');
+            if (dockItem) {
+                e.preventDefault();
+                showContextMenu(e.clientX, e.clientY, dockItem);
+            }
+        });
+    }
+});
+
+function showContextMenu(x, y, dockItem) {
+    const onclickStr = dockItem.getAttribute('onclick');
+    if (!onclickStr) return;
+    
+    const winIdMatch = onclickStr.match(/'([^']+)'/);
+    if (!winIdMatch) return;
+    const winId = winIdMatch[1];
+    
+    let menu = document.getElementById('neon-context-menu');
+    if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'neon-context-menu';
+        document.body.appendChild(menu);
+    }
+    
+    menu.innerHTML = `
+        <div class="ctx-item" onclick="closeWindow('${winId}'); document.getElementById('neon-context-menu').classList.remove('active');">
+            <span style="color: #ff3333; margin-right: 8px; font-weight: bold;">✕</span> Fechar App
+        </div>
+    `;
+    
+    // Manter menu dentro da tela
+    if (x + 160 > window.innerWidth) x = window.innerWidth - 170;
+    
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y - 50}px`; 
+    menu.classList.add('active');
+}
+
+// Fechar context menu ao clicar fora
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('neon-context-menu');
+    if (menu && !menu.contains(e.target)) {
+        menu.classList.remove('active');
+    }
+});

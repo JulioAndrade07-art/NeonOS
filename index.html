@@ -133,6 +133,12 @@
             <div class="app-name">Arquivos</div>
         </div>
 
+        <!-- NexusGear E-Commerce -->
+        <div class="app-icon" onclick="openWindow('win-ecommerce')">
+            <div class="icon-box" style="color: #00f3ff; font-size: 24px;">🛒</div>
+            <div class="app-name">NexusGear</div>
+        </div>
+
         <!-- Ajuda -->
         <div class="app-icon" onclick="openWindow('win-help')">
             <div class="icon-box" style="color: var(--neon-cyan); font-size: 24px;">❓</div>
@@ -871,7 +877,7 @@
             </div>
         </div>
         <div class="window-content" style="padding: 0; background: #000; overflow: hidden; position: relative;">
-            <div id="atomos-container" style="width: 100%; height: 100%;"></div>
+            <iframe id="atomos-iframe" src="atomos-app/index.html" style="width: 100%; height: 100%; border: none; position: absolute; top:0; left:0; z-index: 0;"></iframe>
 
             <!-- HUD -->
             <div id="atomos-hud" class="atomos-hud">
@@ -950,6 +956,22 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- WINDOW 13: E-Commerce (NexusGear) -->
+    <div id="win-ecommerce" class="window" style="width: 1000px; height: 700px;">
+        <div class="window-header" style="background: rgba(10,10,25,0.8); border-bottom: 1px solid var(--neon-purple);">
+            <div class="window-title" style="color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple);">NexusGear - E-Commerce</div>
+            <div class="window-controls">
+                <label class="neon-toggle-wrap">
+                    <input type="checkbox" onchange="sysToggleWindow('win-ecommerce', this)">
+                    <span class="neon-slider" style="background: rgba(157, 78, 221, 0.2); border-color: var(--neon-purple);"></span>
+                </label>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0; overflow: hidden; background: #0f0f1a;">
+            <iframe src="ecommerce-app/index.html" style="width: 100%; height: 100%; border: none; display: block;"></iframe>
         </div>
     </div>
 
@@ -1064,6 +1086,10 @@
             <!-- Átomos Shortcut -->
             <div class="dock-item" onclick="openWindow('win-atomos')" title="Átomos">
                 <span style="color: #ff007f;">⚛️</span>
+            </div>
+            <!-- NexusGear Shortcut -->
+            <div class="dock-item" onclick="openWindow('win-ecommerce')" title="NexusGear">
+                <span style="color: #00f3ff;">🛒</span>
             </div>
         </div>
 

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusGear | Startup E-Commerce</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neonPurple: '#9d4edd',
+            neonBlue: '#00f3ff',
+            neonPink: '#ff007f',
+            bgDark: '#0f0f1a',
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="antialiased font-sans text-white">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, createContext, useContext, useMemo, useCallback, useRef } = React;
+
+    // --- MOCK DATABASE ---
+    const MOCK_PRODUCTS = [
+      { id: 1, categoria: "Armas", nome: "Espada Energética", preco: 199.90, imagem: "sword.png", raridade: "Épico", descricao: "Arma futurista com lâmina de plasma superaquecido. Corta qualquer liga metálica conhecida com precisão cirúrgica." },
+      { id: 2, categoria: "Energia", nome: "Reator Compacto Arc", preco: 499.90, imagem: "reator.png", raridade: "Lendário", descricao: "Fonte de energia portátil com fusão a frio. Perfeita para exoesqueletos pesados e viagens interplanetárias longas." },
+      { id: 3, categoria: "Drones", nome: "Drone Minerador Z-9", preco: 299.90, imagem: "drone.png", raridade: "Raro", descricao: "Drone autônomo com IA neural adaptativa. Especializado em extrair minérios densos em ambientes extremos." },
+      { id: 4, categoria: "Implantes", nome: "Implante Neural V2", preco: 899.00, imagem: "chip.png", raridade: "Lendário", descricao: "Expanda sua capacidade cognitiva. Acesse a rede diretamente pelo córtex cerebral e baixe habilidades em tempo real." },
+      { id: 5, categoria: "Acessórios", nome: "Óculos HUD Mk4", preco: 150.00, imagem: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&q=80", raridade: "Comum", descricao: "Visão aprimorada com interface holográfica. Escaneia biometria e trajetórias balísticas." },
+      { id: 6, categoria: "Armas", nome: "Pistola de Pulso EMP", preco: 340.00, imagem: "https://images.unsplash.com/photo-1544256718-3b61023719af?w=500&q=80", raridade: "Épico", descricao: "Desativação instantânea de hardware inimigo através de campo eletromagnético direcional." },
+      { id: 7, categoria: "Implantes", nome: "Braço Biônico T-100", preco: 1200.00, imagem: "https://images.unsplash.com/photo-1589182332152-15485ea4f2e6?w=500&q=80", raridade: "Mítico", descricao: "Força aprimorada e precisão microscópica. Estrutura em nanotubos de carbono." },
+      { id: 8, categoria: "Acessórios", nome: "Relógio Sincronizador Temporal", preco: 550.00, imagem: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=500&q=80", raridade: "Raro", descricao: "Atrasa a percepção humana de tempo em curtas janelas de emergência." }
+    ];
+
+    const CATEGORIAS = ["Todos", ...new Set(MOCK_PRODUCTS.map(p => p.categoria))];
+
+    // --- CONTEXT: TOAST NOTIFICATIONS ---
+    const ToastContext = createContext();
+    const ToastProvider = ({ children }) => {
+      const [toasts, setToasts] = useState([]);
+
+      const addToast = useCallback((message, type = 'success') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type }]);
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== id));
+        }, 3000);
+      }, []);
+
+      return (
+        <ToastContext.Provider value={{ addToast }}>
+          {children}
+          <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3">
+            {toasts.map(t => (
+              <div key={t.id} className={`toast-animate px-6 py-4 rounded-xl shadow-lg border flex items-center gap-3 ${t.type === 'success' ? 'bg-[#102015] border-green-500/30 text-green-400' : 'bg-[#201015] border-red-500/30 text-red-400'}`}>
+                <iconify-icon icon={t.type === 'success' ? "mdi:check-circle" : "mdi:alert-circle"} width="24"></iconify-icon>
+                <p className="font-medium">{t.message}</p>
+              </div>
+            ))}
+          </div>
+        </ToastContext.Provider>
+      );
+    };
+    const useToast = () => useContext(ToastContext);
+
+    // --- CONTEXT: FAVORITES & CART ---
+    const ShopContext = createContext();
+    const ShopProvider = ({ children }) => {
+      const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem('nkxs_cart') || '[]'));
+      const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem('nkxs_favs') || '[]'));
+      const [isCartOpen, setIsCartOpen] = useState(false);
+
+      useEffect(() => { localStorage.setItem('nkxs_cart', JSON.stringify(cart)); }, [cart]);
+      useEffect(() => { localStorage.setItem('nkxs_favs', JSON.stringify(favorites)); }, [favorites]);
+
+      const toggleFavorite = (productId) => {
+        setFavorites(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
+      };
+
+      const addToCart = (product) => {
+        setCart(prev => {
+          const exists = prev.find(item => item.id === product.id);
+          if (exists) return prev.map(item => item.id === product.id ? { ...item, qtde: item.qtde + 1 } : item);
+          return [...prev, { ...product, qtde: 1 }];
+        });
+      };
+
+      const updateQuantity = (id, delta) => {
+        setCart(prev => prev.map(item => {
+          if (item.id === id) {
+            const newQtde = item.qtde + delta;
+            return newQtde > 0 ? { ...item, qtde: newQtde } : item;
+          }
+          return item;
+        }));
+      };
+
+      const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
+
+      const cartTotal = cart.reduce((acc, item) => acc + (item.preco * item.qtde), 0);
+      const cartCount = cart.reduce((acc, item) => acc + item.qtde, 0);
+
+      return (
+        <ShopContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, cartTotal, cartCount, favorites, toggleFavorite, isCartOpen, setIsCartOpen }}>
+          {children}
+        </ShopContext.Provider>
+      );
+    };
+    const useShop = () => useContext(ShopContext);
+
+    // --- CORE UI COMPONENTS ---
+
+    const Header = ({ searchQuery, setSearchQuery }) => {
+      const { cartCount, setIsCartOpen, favorites } = useShop();
+      return (
+        <header className="fixed top-0 w-full glass-panel z-50 px-6 py-4 shadow-xl">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* Logo */}
+            <div className="text-2xl font-black cursor-pointer neon-text-purple flex items-center gap-2" onClick={() => window.scrollTo(0, 0)}>
+              <iconify-icon icon="mdi:triangle-wave" width="30" className="text-neonBlue"></iconify-icon>
+              NEXUS<span className="text-white font-light">GEAR</span>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative w-full md:w-96">
+              <iconify-icon icon="mdi:magnify" width="20" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></iconify-icon>
+              <input 
+                type="text" 
+                placeholder="Buscar tecnologia..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input w-full pl-10 pr-4 py-2 text-sm focus:outline-none"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-gray-400 cursor-pointer hover:text-red-400 transition-colors">
+                <iconify-icon icon={favorites.length > 0 ? "mdi:cards-heart" : "mdi:cards-heart-outline"} width="26" className={favorites.length > 0 ? "text-red-500" : ""}></iconify-icon>
+                <span className="text-sm font-semibold">{favorites.length}</span>
+              </div>
+              <div className="relative cursor-pointer text-gray-300 hover:text-white transition-colors" onClick={() => setIsCartOpen(true)}>
+                <iconify-icon icon="mdi:cart-outline" width="30"></iconify-icon>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-neonPink text-white text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-[0_0_10px_#ff007f]">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+      );
+    };
+
+    const CartDrawer = () => {
+      const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal } = useShop();
+
+      if (!isCartOpen) return null;
+
+      return (
+        <>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity" onClick={() => setIsCartOpen(false)}></div>
+          <div className="fixed top-0 right-0 h-full w-full max-w-[420px] bg-[#0c0c14] border-l border-white/5 z-[60] drawer-animate flex flex-col shadow-2xl">
+            {/* Drawer Header */}
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-[#0a0a10]">
+              <h2 className="text-2xl font-black neon-text-blue flex items-center gap-2">
+                <iconify-icon icon="mdi:shopping"></iconify-icon> Seu Arsenal
+              </h2>
+              <button onClick={() => setIsCartOpen(false)} className="btn-icon w-10 h-10 text-gray-400 hover:text-white">
+                <iconify-icon icon="mdi:close" width="24"></iconify-icon>
+              </button>
+            </div>
+
+            {/* Drawer Body (Items) */}
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 custom-scrollbar">
+              {cart.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-gray-500 opacity-70">
+                  <iconify-icon icon="mdi:cart-remove" width="60" className="mb-4"></iconify-icon>
+                  <p className="font-medium text-lg">Carrinho Vazio</p>
+                </div>
+              ) : (
+                cart.map(item => (
+                  <div key={item.id} className="glass-panel p-3 rounded-xl flex gap-4 items-center group">
+                    <img src={item.imagem} alt={item.nome} className="w-20 h-20 rounded-lg object-cover bg-black/50" />
+                    <div className="flex-1">
+                      <h4 className="font-bold text-sm text-white line-clamp-1">{item.nome}</h4>
+                      <p className="text-neonBlue text-sm font-semibold mt-1">R$ {item.preco.toFixed(2)}</p>
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="flex items-center gap-2 bg-black/50 rounded-md px-2 py-1 border border-white/5">
+                          <button onClick={() => updateQuantity(item.id, -1)} className="text-gray-400 hover:text-white px-1">-</button>
+                          <span className="text-xs font-bold w-4 text-center">{item.qtde}</span>
+                          <button onClick={() => updateQuantity(item.id, 1)} className="text-gray-400 hover:text-white px-1">+</button>
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={() => removeFromCart(item.id)} className="text-gray-500 hover:text-red-500 transition-colors p-2">
+                      <iconify-icon icon="mdi:trash-can" width="20"></iconify-icon>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Drawer Footer (Checkout) */}
+            <div className="p-6 border-t border-white/10 bg-[#0a0a10]">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-gray-400">Total</span>
+                <span className="text-3xl font-black text-white">R$ {cartTotal.toFixed(2)}</span>
+              </div>
+              <button 
+                className={`btn-primary w-full py-4 text-lg flex items-center justify-center gap-2 ${cart.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={cart.length === 0}
+              >
+                <iconify-icon icon="mdi:lock"></iconify-icon> Finalizar Compra
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    };
+
+    const ImageWithSkeleton = ({ src, alt, className }) => {
+      const [loaded, setLoaded] = useState(false);
+      return (
+        <div className={`relative overflow-hidden ${className}`}>
+          {!loaded && <div className="absolute inset-0 skeleton"></div>}
+          <img 
+            src={src} 
+            alt={alt} 
+            onLoad={() => setLoaded(true)}
+            className={`w-full h-full object-cover transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </div>
+      );
+    };
+
+    const ProductCard = ({ product, index, onOpenDetails }) => {
+      const { favorites, toggleFavorite, addToCart, setIsCartOpen } = useShop();
+      const { addToast } = useToast();
+      const isFav = favorites.includes(product.id);
+
+      const handleAddToCart = (e) => {
+        e.stopPropagation();
+        addToCart(product);
+        addToast(`${product.nome} adicionado!`);
+        setIsCartOpen(true);
+      };
+
+      const handleToggleFav = (e) => {
+        e.stopPropagation();
+        toggleFavorite(product.id);
+        addToast(isFav ? "Removido dos favoritos." : "Adicionado aos favoritos!");
+      };
+
+      // Staggered animation delay
+      const delayStyle = { animationDelay: `${index * 0.1}s` };
+
+      return (
+        <div className="product-card flex flex-col cursor-pointer group stagger-item" style={delayStyle} onClick={() => onOpenDetails(product)}>
+          {/* Card Image Area */}
+          <div className="relative h-56 overflow-hidden">
+            <ImageWithSkeleton src={product.imagem} alt={product.nome} className="w-full h-full" />
+            
+            {/* Raridade Badge */}
+            <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[10px] font-bold tracking-widest uppercase">
+              {product.raridade}
+            </div>
+
+            {/* Favorite Button */}
+            <button 
+              onClick={handleToggleFav}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-white/10 transition-colors z-10"
+            >
+              <iconify-icon icon={isFav ? "mdi:cards-heart" : "mdi:cards-heart-outline"} className={isFav ? "text-red-500" : "text-white"} width="18"></iconify-icon>
+            </button>
+
+            {/* Quick Add Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+              <button 
+                onClick={handleAddToCart}
+                className="btn-primary py-2 px-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 flex items-center gap-2"
+              >
+                <iconify-icon icon="mdi:cart-plus"></iconify-icon> Adicionar Rápido
+              </button>
+            </div>
+          </div>
+
+          {/* Card Content Area */}
+          <div className="p-5 flex-1 flex flex-col z-20 bg-gradient-to-b from-transparent to-[#0a0a10]">
+            <span className="text-xs text-neonPurple font-semibold mb-1 uppercase tracking-wide">{product.categoria}</span>
+            <h3 className="text-lg font-bold text-white leading-tight mb-2 group-hover:text-neonBlue transition-colors">{product.nome}</h3>
+            
+            <div className="mt-auto flex justify-between items-end pt-4">
+              <p className="text-2xl font-black text-white">
+                R$ {product.preco.toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+
+    const StoreFront = () => {
+      const [searchQuery, setSearchQuery] = useState("");
+      const [activeCategory, setActiveCategory] = useState("Todos");
+      const [selectedProduct, setSelectedProduct] = useState(null);
+
+      // Filtering logic
+      const filteredProducts = useMemo(() => {
+        return MOCK_PRODUCTS.filter(p => {
+          const matchesSearch = p.nome.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesCategory = activeCategory === "Todos" || p.categoria === activeCategory;
+          return matchesSearch && matchesCategory;
+        });
+      }, [searchQuery, activeCategory]);
+
+      return (
+        <div className="pt-28 pb-20 min-h-screen relative z-10">
+          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          
+          <main className="max-w-7xl mx-auto px-6">
+            
+            {/* Store Hero text */}
+            <div className="py-12 md:py-20 text-center stager-item">
+              <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight glow-text leading-tight">
+                UPGRADE <span className="neon-text-purple">COMPLETO</span>
+              </h1>
+              <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+                Armamentos neurais, exoesqueletos e ferramentas de intrusão do submundo corporativo.<br/> 
+                A evolução não espera.
+              </p>
+            </div>
+
+            {/* Filters Bar */}
+            <div className="flex flex-wrap gap-3 mb-12 justify-center stagger-item">
+              {CATEGORIAS.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all ${
+                    activeCategory === cat 
+                    ? 'bg-neonPurple/20 border-neonPurple text-white shadow-[0_0_15px_rgba(157,78,221,0.3)]' 
+                    : 'bg-black/30 border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Products Grid */}
+            <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-2 stagger-item">
+              <span className="text-gray-400">Exibindo {filteredProducts.length} implantes</span>
+            </div>
+
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-20 text-gray-500">
+                <iconify-icon icon="mdi:robot-dead" width="60" className="mb-4 opacity-50"></iconify-icon>
+                <p className="text-xl">Nenhuma tecnologia encontrada nos registradores.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((p, index) => (
+                  <ProductCard key={p.id} product={p} index={index} onOpenDetails={setSelectedProduct} />
+                ))}
+              </div>
+            )}
+          </main>
+
+          <CartDrawer />
+
+          {/* Product Modal (Simple detail logic) */}
+          {selectedProduct && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 drawer-animate">
+              <div className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl relative shadow-[0_0_50px_rgba(0,0,0,1)] grid md:grid-cols-2">
+                <button 
+                  className="absolute top-4 right-4 btn-icon w-10 h-10 text-white z-20 bg-black/50"
+                  onClick={() => setSelectedProduct(null)}
+                >
+                  <iconify-icon icon="mdi:close" width="24"></iconify-icon>
+                </button>
+                
+                <div className="h-64 md:h-full relative bg-black/40">
+                  <ImageWithSkeleton src={selectedProduct.imagem} alt={selectedProduct.nome} className="w-full h-full" />
+                </div>
+                
+                <div className="p-8 flex flex-col justify-center">
+                  <span className="inline-block px-3 py-1 bg-neonPurple/20 border border-neonPurple text-neonPurple text-xs font-bold uppercase tracking-widest rounded-full mb-4 w-max">
+                    {selectedProduct.raridade}
+                  </span>
+                  <h1 className="text-3xl md:text-5xl font-black mb-4 neon-text-blue">{selectedProduct.nome}</h1>
+                  <p className="text-lg text-gray-400 mb-8 leading-relaxed">{selectedProduct.descricao}</p>
+                  
+                  <div className="mt-auto">
+                    <p className="text-sm text-gray-500 uppercase tracking-widest mb-1">Preço no Mercado Secundário</p>
+                    <div className="text-5xl font-black text-white mb-8 border-l-4 border-neonPink pl-4">
+                      R$ {selectedProduct.preco.toFixed(2)}
+                    </div>
+                    
+                    <button 
+                      className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3"
+                      onClick={() => {
+                        const shopContext = document.getElementById('root')._shopContextFallback;
+                        // Since we can't easily access the hook outside the provider cleanly in this modal scope if it was extracted,
+                        // Actually, this modal is IN the StoreFront which IS in the provider. Let's use it properly.
+                      }}
+                    >
+                      <iconify-icon icon="mdi:cart-arrow-down"></iconify-icon> Assmilar ao Inventário
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Modal AddToCart Fix helper
+    const ProductModalInner = ({ product, onClose }) => {
+      const { addToCart, setIsCartOpen } = useShop();
+      const { addToast } = useToast();
+      
+      const handleAdd = () => {
+        addToCart(product);
+        addToast("Download concluído. Item no inventário!");
+        onClose();
+        setIsCartOpen(true);
+      };
+
+      return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl relative flex flex-col md:flex-row shadow-[0_0_50px_rgba(0,0,0,1)] toast-animate">
+            <button 
+              className="absolute top-4 right-4 btn-icon w-10 h-10 text-white z-20 bg-black/50"
+              onClick={onClose}
+            >
+              <iconify-icon icon="mdi:close" width="24"></iconify-icon>
+            </button>
+            <div className="h-64 md:h-auto md:w-1/2 relative bg-black/40">
+              <ImageWithSkeleton src={product.imagem} alt={product.nome} className="w-full h-full" />
+            </div>
+            <div className="p-8 md:w-1/2 overflow-y-auto flex flex-col justify-center">
+              <span className="inline-block px-3 py-1 bg-neonPurple/20 border border-neonPurple text-neonPurple text-xs font-bold uppercase tracking-widest rounded-full mb-4 w-max">
+                Raridade: {product.raridade}
+              </span>
+              <h1 className="text-3xl lg:text-4xl font-black mb-4 neon-text-blue">{product.nome}</h1>
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">{product.descricao}</p>
+              
+              <div className="mt-auto">
+                <p className="text-sm text-gray-500 uppercase tracking-widest mb-1">Câmbio Atual</p>
+                <div className="text-4xl font-black text-white mb-8 border-l-4 border-neonPink pl-4">
+                  R$ {product.preco.toFixed(2)}
+                </div>
+                
+                <button className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3" onClick={handleAdd}>
+                  <iconify-icon icon="mdi:cart-arrow-down"></iconify-icon> Assimilar ao Inventário
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Fix the StoreFront ProductModal rendering
+    const FixStoreFront = () => {
+      const [searchQuery, setSearchQuery] = useState("");
+      const [activeCategory, setActiveCategory] = useState("Todos");
+      const [selectedProduct, setSelectedProduct] = useState(null);
+
+      const filteredProducts = useMemo(() => {
+        return MOCK_PRODUCTS.filter(p => {
+          const matchesSearch = p.nome.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesCategory = activeCategory === "Todos" || p.categoria === activeCategory;
+          return matchesSearch && matchesCategory;
+        });
+      }, [searchQuery, activeCategory]);
+
+      return (
+        <div className="pt-28 pb-20 min-h-screen relative z-10 transition-colors">
+          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          
+          <main className="max-w-7xl mx-auto px-6">
+            <div className="py-12 md:py-20 text-center stagger-item">
+              <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight leading-tight">
+                UPGRADE <span className="neon-text-purple">COMPLETO</span>
+              </h1>
+              <p className="text-text-secondary text-lg md:text-xl max-w-2xl mx-auto">
+                Armamentos neurais, exoesqueletos e ferramentas de intrusão corporativa.<br/> A evolução não espera.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 mb-12 justify-center stagger-item">
+              {CATEGORIAS.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-6 py-3 rounded-full border text-sm uppercase tracking-wider font-semibold transition-all ${
+                    activeCategory === cat 
+                    ? 'bg-neonPurple/20 border-neonPurple text-white shadow-[0_0_15px_rgba(157,78,221,0.3)]' 
+                    : 'bg-black/30 border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4 stagger-item">
+              <span className="text-gray-400 font-medium">Exibindo {filteredProducts.length} itens no arsenal</span>
+            </div>
+
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-20 text-gray-500 stagger-item">
+                <iconify-icon icon="mdi:robot-dead" width="80" className="mb-4 opacity-50"></iconify-icon>
+                <p className="text-xl">Nenhuma tecnologia encontrada nos registradores.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((p, index) => (
+                  <ProductCard key={p.id} product={p} index={index} onOpenDetails={setSelectedProduct} />
+                ))}
+              </div>
+            )}
+          </main>
+
+          <CartDrawer />
+
+          {selectedProduct && <ProductModalInner product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+        </div>
+      );
+    };
+
+    const App = () => {
+      return (
+        <ToastProvider>
+          <ShopProvider>
+            <FixStoreFront />
+          </ShopProvider>
+        </ToastProvider>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
